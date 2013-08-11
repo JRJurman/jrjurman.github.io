@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Jesse Jurman]]></title>
+  <link href="http://JRJurman.github.io/atom.xml" rel="self"/>
+  <link href="http://JRJurman.github.io/"/>
+  <updated>2013-08-11T19:17:29-04:00</updated>
+  <id>http://JRJurman.github.io/</id>
+  <author>
+    <name><![CDATA[Jesse Jurman]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
