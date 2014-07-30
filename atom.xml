@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Jesse Jurman]]></title>
-  <link href="http://JRJurman.github.io/atom.xml" rel="self"/>
-  <link href="http://JRJurman.github.io/"/>
-  <updated>2014-07-30T00:01:42-04:00</updated>
-  <id>http://JRJurman.github.io/</id>
+  <link href="http://jrjurman.com/atom.xml" rel="self"/>
+  <link href="http://jrjurman.com/"/>
+  <updated>2014-07-30T00:17:24-04:00</updated>
+  <id>http://jrjurman.com/</id>
   <author>
     <name><![CDATA[Jesse Jurman]]></name>
     
