@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  
+  
+  <url>
+    <loc>http://JRJurman.github.io/blog/archives/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/blog/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/cobra-starfish/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/rapdevxi/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/rbrick/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/sse-mycroft/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/projects/volumetric-display/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://JRJurman.github.io/resume/</loc>
+    <lastmod>2014-07-30T00:01:42-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  
+</urlset>
