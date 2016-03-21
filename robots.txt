@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://jrjurman.com/sitemap.xml 
