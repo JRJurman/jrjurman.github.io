@@ -4169,11 +4169,8 @@ module.exports = () => {
   return html`
     <div class="text-info" style=${containerStyle}>
       <h1>
-        I'm always building something on github!
-        <br><br>
-        <a href="https://github.com/jrjurman">github.com/jrjurman</a>
-        <br><br>
-        Below are some of the highlights!
+        Github Page is in the works!<br>
+        Come back soon!
       </h1>
     </div>
   `
@@ -4186,6 +4183,7 @@ const textblock = require('../elements/textblock');
 const pictureBlock = require('../custom-elements/picture-block');
 
 const containerStyle = `
+  text-align: center;
   max-width: 600px;
   margin: auto;
 `
@@ -4193,18 +4191,10 @@ const containerStyle = `
 module.exports = () => {
   return html`
     <div class="text-danger" style=${containerStyle}>
-      ${textblock(
-        '/assets/dark-jrjurman.png',
-        `I love building small web-apps,
-        below I've listed a couple that
-        you can play with right now!`
-      )}
-      <picture-block>
-        <img src='/assets/dark-jrjurman.png'>
-        <h2>I love building small web-apps,
-        below I've listed a couple that
-        you can play with right now!</h2>
-      </picture-block>
+      <h1>
+        Projects Page is in the works!<br>
+        Come back soon!
+      </h1>
     </div>
   `
 }
