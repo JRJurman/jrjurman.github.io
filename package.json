@@ -8,7 +8,7 @@
     "prebuild": "cp -r public/ dist",
     "build": "browserify src/index.js -o dist/index.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -b master"
   },
   "repository": {
     "type": "git",
