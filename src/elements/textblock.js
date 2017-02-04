@@ -4,7 +4,6 @@ const containerStyle = `
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.25em 0em;
 `
 
 module.exports = (first, second) => {
