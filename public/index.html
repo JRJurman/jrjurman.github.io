@@ -1,10 +1,26 @@
 <html>
   <meta name = "viewport" content = "initial-scale=1.0, maximum-scale=0.5, width=device-width">
-
   <title>Jesse Jurman</title>
-  <link rel="stylesheet" href="./assets/cosmo.min.css">
-  <link rel="stylesheet" href="./assets/vhs.min.css">
+  <link rel="stylesheet" href="/assets/cosmo.min.css">
+  <link rel="stylesheet" href="/assets/vhs.min.css">
 </html>
 <body>
-  <script src="index.js"></script>
+  <script>
+  /* polyfill for web components */
+  (function() {
+    if ('registerElement' in document
+        && 'import' in document.createElement('link')
+        && 'content' in document.createElement('template')) {
+      // platform is good!
+    } else {
+      // polyfill the platform!
+      var e = document.createElement('script');
+      e.src = '/assets/webcomponents.min.js';
+      document.body.appendChild(e);
+    }
+  })();
+  var e = document.createElement('script');
+  e.src = 'index.js';
+  document.body.appendChild(e);
+  </script>
 </body>

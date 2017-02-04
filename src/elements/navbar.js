@@ -10,7 +10,7 @@ const navbarStyle = `
   margin: auto;
   max-width: 600px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 `
 
 const navPlaceholderStyle = `
