@@ -64,7 +64,7 @@ module.exports = () => {
             A project spearheaded by myself and Cicely DiPaulo to make a true 3D display.
             A collaborative project by RIT students in the Society of Software Engineers and the Center for Imaging Science.
             Read more at:
-            <a href="http://jrjurman.com/SpaceJam/">jrjurman.com/SpaceJam</a>
+            <a href="https://jrjurman.github.io/SpaceJam/">jrjurman.com/SpaceJam</a>
           </h4>
         `
       )}
