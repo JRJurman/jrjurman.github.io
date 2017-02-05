@@ -4255,7 +4255,7 @@ module.exports = () => {
             A project spearheaded by myself and Cicely DiPaulo to make a true 3D display.
             A collaborative project by RIT students in the Society of Software Engineers and the Center for Imaging Science.
             Read more at:
-            <a href="http://jrjurman.com/SpaceJam/">jrjurman.com/SpaceJam</a>
+            <a href="https://jrjurman.github.io/SpaceJam/">jrjurman.com/SpaceJam</a>
           </h4>
         `
       )}
@@ -4339,7 +4339,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Pianola', '/assets/programs/pianola.png',
-        html`<a href="http://jrjurman.com/pianola">jrjurman.com/pianola</a>`,
+        html`<a href="https://jrjurman.github.io/pianola">jrjurman.com/pianola</a>`,
         html`
           <h4>
             React app to display piano chords and scales.
@@ -4360,7 +4360,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'jrjurman.com', '/assets/programs/website.png',
-        html`<a href="http://jrjurman.com/">jrjurman.com</a>`,
+        html`<a href="https://jrjurman.github.io/">jrjurman.com</a>`,
         html`
           <h4>
             Choo app to display interests and portfolio of work.
@@ -4370,7 +4370,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Vigenere', '/assets/programs/vigenere.png',
-        html`<a href="http://jrjurman.com/vigenere">jrjurman.com/vigenere</a>`,
+        html`<a href="https://jrjurman.github.io/vigenere">jrjurman.com/vigenere</a>`,
         html`
           <h4>
             Simple Choo app to encrypt messages using Vigenere encryption.
@@ -4380,7 +4380,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Password Generator', '/assets/programs/password.png',
-        html`<a href="http://jrjurman.com/password-generator/">jrjurman.com/password-generator</a>`,
+        html`<a href="https://jrjurman.github.io/password-generator/">jrjurman.com/password-generator</a>`,
         html`
           <h4>
             Simple React app to build passwords with different customizations.
@@ -4390,7 +4390,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Is it a Word?', '/assets/programs/word.png',
-        html`<a href="http://jrjurman.com/isitaword/">jrjurman.com/isitaword</a>`,
+        html`<a href="https://jrjurman.github.io/isitaword/">jrjurman.com/isitaword</a>`,
         html`
           <h4>
             Simple vanilla JS app that tells you if something is a word. Great for Scrabble!
