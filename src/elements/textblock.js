@@ -4,23 +4,23 @@ const containerStyle = `
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1em;
 `
 
 module.exports = (first, second) => {
-
-  const imageStyle = `
-    width: 3em;
-    height: 3em;
-    border-radius: 50%;
-  `
 
   const children = [first, second].map((child) => {
     const childCopy = child.cloneNode(true);
     if (child.tagName === 'IMG') {
       // this is an image tag, add styles to it
-      childCopy.style.width = '3em';
-      childCopy.style.height = '3em';
+      childCopy.style.width = '3.3em';
+      childCopy.style.height = '3.3em';
       childCopy.style.borderRadius = '50%';
+      childCopy.style.border = 'solid 1px #454545';
+    }
+    if (child.tagName && child.tagName.indexOf('H') === 0) {
+      // this is an image tag, add styles to it
+      childCopy.style.margin = '0px';
     }
     return childCopy;
   })

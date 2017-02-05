@@ -19,8 +19,8 @@ const navPlaceholderStyle = `
 
 module.exports = () => {
   const about = navbutton.bind(this, 'About', '/about');
-  const projects = navbutton.bind(this, 'Projects', '/projects');
-  const github = navbutton.bind(this, 'Github', '/github');
+  const projects = navbutton.bind(this, 'Web Apps', '/web-apps');
+  const github = navbutton.bind(this, 'Projects', '/projects');
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
   return html`

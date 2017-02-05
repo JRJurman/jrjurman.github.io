@@ -8,7 +8,7 @@ const linkStyle = `
 module.exports = (text, link) => {
   return html`
     <h3>
-      <a  style=${linkStyle} 
+      <a  style=${linkStyle}
           href="${link}">
         ${text}
       </a>
