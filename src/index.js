@@ -4,7 +4,7 @@ const app = choo();
 
 const layout = require('./components/layout');
 const about = require('./pages/about');
-const webapps = require('./pages/webapps');
+const webapps = require('./pages/web-apps');
 const projects = require('./pages/projects');
 const resume = require('./pages/resume');
 
