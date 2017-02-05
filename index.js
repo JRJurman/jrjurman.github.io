@@ -4093,14 +4093,14 @@ app.model(renderState);
 
 app.router([
   ['/', layout.bind(this, about)],
-  ['/about', layout.bind(this, about)],
-  ['/about/', layout.bind(this, about)],
-  ['/web-apps', layout.bind(this, webapps)],
-  ['/web-apps/', layout.bind(this, webapps)],
-  ['/projects', layout.bind(this, projects)],
-  ['/projects/', layout.bind(this, projects)],
-  ['/resume', layout.bind(this, resume)],
-  ['/resume/', layout.bind(this, resume)]
+  ['about', layout.bind(this, about)],
+  ['about/', layout.bind(this, about)],
+  ['web-apps', layout.bind(this, webapps)],
+  ['web-apps/', layout.bind(this, webapps)],
+  ['projects', layout.bind(this, projects)],
+  ['projects/', layout.bind(this, projects)],
+  ['resume', layout.bind(this, resume)],
+  ['resume/', layout.bind(this, resume)]
 ]);
 
 const tree = app.start();
