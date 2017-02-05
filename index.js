@@ -3828,7 +3828,7 @@ module.exports = (pageComponent, state, prev, send) => {
   `
 }
 
-},{"../elements/footer":38,"../elements/header":39,"../elements/navbar":40,"./pagewrapper":36,"choo/html":6}],36:[function(require,module,exports){
+},{"../elements/footer":37,"../elements/header":38,"../elements/navbar":39,"./pagewrapper":36,"choo/html":6}],36:[function(require,module,exports){
 const html = require('choo/html');
 
 const { actions } = require('../models/renderState');
@@ -3867,22 +3867,6 @@ module.exports = (page, state, prev, send) => {
 },{"../models/renderState":44,"choo/html":6}],37:[function(require,module,exports){
 const html = require('choo/html');
 
-class PictureBlock extends HTMLElement {
-  createdCallback () {
-    console.log(this.childNodes);
-    this.createShadowRoot();
-  }
-  attachedCallback () {
-    console.log(this.childNodes);
-    this.shadowRoot.appendChild.apply(this.shadowRoot, this.childNodes);
-  }
-}
-
-document.registerElement('picture-block', PictureBlock)
-
-},{"choo/html":6}],38:[function(require,module,exports){
-const html = require('choo/html');
-
 const footerStyle = `
   text-align: center;
   color: white;
@@ -3899,7 +3883,7 @@ module.exports = () => {
   `
 }
 
-},{"choo/html":6}],39:[function(require,module,exports){
+},{"choo/html":6}],38:[function(require,module,exports){
 const html = require('choo/html');
 
 const headerStyle = `
@@ -3959,7 +3943,7 @@ module.exports = () => {
   `
 }
 
-},{"choo/html":6}],40:[function(require,module,exports){
+},{"choo/html":6}],39:[function(require,module,exports){
 const html = require('choo/html');
 
 const navbutton = require('./navbutton');
@@ -3972,7 +3956,7 @@ const navbarStyle = `
   margin: auto;
   max-width: 600px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 `
 
 const navPlaceholderStyle = `
@@ -3981,8 +3965,8 @@ const navPlaceholderStyle = `
 
 module.exports = () => {
   const about = navbutton.bind(this, 'About', '/about');
-  const projects = navbutton.bind(this, 'Projects', '/projects');
-  const github = navbutton.bind(this, 'Github', '/github');
+  const projects = navbutton.bind(this, 'Web Apps', '/web-apps');
+  const github = navbutton.bind(this, 'Projects', '/projects');
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
   return html`
@@ -3998,7 +3982,7 @@ module.exports = () => {
   `
 }
 
-},{"./navbutton":41,"choo/html":6}],41:[function(require,module,exports){
+},{"./navbutton":40,"choo/html":6}],40:[function(require,module,exports){
 const html = require('choo/html');
 
 const linkStyle = `
@@ -4009,7 +3993,7 @@ const linkStyle = `
 module.exports = (text, link) => {
   return html`
     <h3>
-      <a  style=${linkStyle} 
+      <a  style=${linkStyle}
           href="${link}">
         ${text}
       </a>
@@ -4017,40 +4001,77 @@ module.exports = (text, link) => {
   `
 }
 
-},{"choo/html":6}],42:[function(require,module,exports){
+},{"choo/html":6}],41:[function(require,module,exports){
+const html = require('choo/html');
+const textblock = require('../elements/textblock');
+
+const projectTitleStyle = `
+  margin: 0px;
+`
+
+const linkStyle = `
+  margin: 0px;
+`
+
+const titleLinkStyle = `
+  color: inherit;
+  text-decoration: inherit;
+`
+
+module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
+
+  const reverseCall = reverse ? 'reverse' : 'slice';
+
+  return html`
+    ${textblock.apply(this, [
+      html`<h3 style=${projectTitleStyle}>
+        <a  style=${titleLinkStyle}
+            href=${linkDOM.href}>
+              ${title}
+        </a>
+        <h5 style=${linkStyle}>${linkDOM}</h5>
+        <h4>
+          ${contentDOM}
+        </h4>
+      </h3>`,
+      html`<img src='${imageSRC}'>`
+    ][reverseCall]())}
+  `
+}
+
+},{"../elements/textblock":42,"choo/html":6}],42:[function(require,module,exports){
 const html = require('choo/html');
 
 const containerStyle = `
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.25em 0em;
+  margin-bottom: 1em;
 `
 
-module.exports = (first, second, reverse, reverseImage) => {
+module.exports = (first, second) => {
 
-  const imageStyle = `
-    width: 3em;
-    height: 3em;
-    border-radius: 50%;
-    ${reverse ? 'transform: scaleX(-1);' : ''}
-  `
-
-  const {firstDOM, secondDOM} = (() => {
-    if (first.match(/\s/)) {
-      return {  firstDOM: html`<div>${first}</div>`,
-                secondDOM: html`<img style=${imageStyle} src=${second}>`  }
-    } else {
-      return {  secondDOM: html`<div>${second}</div>`,
-                firstDOM: html`<img style=${imageStyle} src=${first}>`  }
+  const children = [first, second].map((child) => {
+    const childCopy = child.cloneNode(true);
+    if (child.tagName === 'IMG') {
+      // this is an image tag, add styles to it
+      childCopy.style.width = '3.3em';
+      childCopy.style.height = '3.3em';
+      childCopy.style.borderRadius = '50%';
+      childCopy.style.border = 'solid 1px #454545';
     }
-  })();
+    if (child.tagName && child.tagName.indexOf('H') === 0) {
+      // this is an image tag, add styles to it
+      childCopy.style.margin = '0px';
+    }
+    return childCopy;
+  })
 
   return html`
     <h2 style=${containerStyle}>
-      ${firstDOM}
+      ${children[0]}
       <div style='margin: 0.25em'></div>
-      ${secondDOM}
+      ${children[1]}
     </h2>
   `
 }
@@ -4062,8 +4083,8 @@ const app = choo();
 
 const layout = require('./components/layout');
 const about = require('./pages/about');
+const webapps = require('./pages/web-apps');
 const projects = require('./pages/projects');
-const github = require('./pages/github');
 const resume = require('./pages/resume');
 
 const renderState = require('./models/renderState');
@@ -4073,15 +4094,15 @@ app.model(renderState);
 app.router([
   ['/', layout.bind(this, about)],
   ['/about', layout.bind(this, about)],
+  ['/web-apps', layout.bind(this, webapps)],
   ['/projects', layout.bind(this, projects)],
-  ['/github', layout.bind(this, github)],
   ['/resume', layout.bind(this, resume)]
 ]);
 
 const tree = app.start();
 document.body.appendChild(tree);
 
-},{"./components/layout":35,"./models/renderState":44,"./pages/about":45,"./pages/github":46,"./pages/projects":47,"./pages/resume":48,"choo":7,"choo/html":6}],44:[function(require,module,exports){
+},{"./components/layout":35,"./models/renderState":44,"./pages/about":45,"./pages/projects":46,"./pages/resume":47,"./pages/web-apps":48,"choo":7,"choo/html":6}],44:[function(require,module,exports){
 const renderState = {
   state: {
     paused: true
@@ -4126,27 +4147,38 @@ const containerStyle = `
   margin: auto;
 `
 
+const reverseStyle = `
+  transform: scaleX(-1);
+`
+
 module.exports = () => {
   return html`
     <div class="text-primary" style=${containerStyle}>
       ${textblock(
-        '/assets/movies/howard.png',
-        `My name is Jesse Jurman.
-        I'm a Software Engineer
-        working at Constant Contact.`
+        html`<img src='/assets/movies/howard.png'>`,
+        html`<h2>
+          My name is Jesse Jurman.
+          I'm a Software Engineer
+          working at Constant Contact.
+        </h2>`
       )}
       ${textblock(
-        `I'm passionate about software architecture,
-        front-end development,
-        and software process models.`,
-        '/assets/movies/robbie.png'
+        html`<h2>
+          I'm passionate about software architecture,
+          front-end development,
+          and software process models.
+        </h2>`,
+        html`<img src='/assets/movies/robbie.png'>`
       )}
       ${textblock(
-        '/assets/movies/transformers.png',
-        `I enjoy building tiny web-apps,
+        html`<img  src='/assets/movies/transformers.png'
+              style=${reverseStyle}></img>`,
+        html`<h2>
+        I enjoy building tiny web-apps,
         collecting laserdiscs,
         playing board games,
-        and watching 80s movies.`, true
+        and watching 80s movies.
+        </h2>`
       )}
     </div>
   `
@@ -4154,68 +4186,226 @@ module.exports = () => {
 
 },{"../elements/textblock":42,"choo/html":6}],46:[function(require,module,exports){
 const html = require('choo/html');
+const textblock = require('../elements/textblock');
+const projectblock = require('../elements/projectblock');
 
 const containerStyle = `
-  text-align: center;
-  margin: 0em 4em;
+  max-width: 600px;
+  margin: auto;
 `
 
-const imageStyle = `
-  width: 600px;
-  height: auto;
+const reverseStyle = `
+  transform: scaleX(-1);
 `
+
 
 module.exports = () => {
   return html`
     <div class="text-info" style=${containerStyle}>
-      <h1>
-        Github Page is in the works!<br>
-        Come back soon!
-      </h1>
+      ${textblock(
+        html`<img src='/assets/movies/galaxina.png'>`,
+        html`<h2>
+          Aside from web apps, I've worked on small libraries,
+          chrome extensions, and desktop apps.
+        </h2>`
+      )}
+      ${textblock(
+        html`<img src='/assets/movies/barbarella.png'>`,
+        html`<h2>
+          Below I've listed some of my favorites, but you can view them all on
+          <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
+        </h2>`
+      )}
+      ${projectblock(
+        'Ticket Printer', '/assets/programs/ticketprinter.png',
+        html`<a href="https://github.com/JRJurman/ticket-printer">github.com/JRJurman/ticket-printer</a>`,
+        html`
+          <h4>
+            Chrome Extension and Server to print work items from Jira, Trello, and Github.
+            Uses a <a href="https://www.adafruit.com/products/597">receipt printer</a>,
+            and a <a href="https://tessel.io/">Tessel 2</a>.
+            You can watch it <a href="https://www.youtube.com/watch?v=sOBhAbXNgUI">in action</a>
+            or hear about <a href="https://www.youtube.com/watch?v=84utpGbwJKU">the hardware</a> on youtube!
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'ASLe16', '/assets/programs/asle16.png',
+        html`<a href="https://github.com/JRJurman/ASLe16">github.com/JRJurman/ASLe16</a>`,
+        html`
+          <h4>
+            Collaborative project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
+            to build an encoding of American Sign Language that fits into a 16 bit space.
+            Uses python for logic and blender for rendering poses.
+            <a href="https://github.com/JRJurman/ASLe16/blob/master/termpaper.pdf">
+            You can read the term paper written on github.
+            </a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Space Jam - 3D Volumetric Display Software', '/assets/programs/spacejam.png',
+        html`<a href="https://github.com/JRJurman/SpaceJam">github.com/JRJurman/SpaceJam</a>`,
+        html`
+          <h4>
+            A project spearheaded by myself and Cicely DiPaulo to make a true 3D display.
+            A collaborative project by RIT students in the Society of Software Engineers and the Center for Imaging Science.
+            Read more at:
+            <a href="http://jrjurman.com/SpaceJam/">jrjurman.com/SpaceJam</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'localinstall', '/assets/programs/localinstall.png',
+        html`<a href="https://github.com/JRJurman/localinstall">github.com/JRJurman/localinstall</a>`,
+        html`
+          <h4>
+            npm package to pack and install npm packages into themselves.
+            Useful for running tests against the distributable that other npm users will be using.
+            <a href="https://www.npmjs.com/package/localinstall">Read more on npmjs</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'PowerLS', '/assets/programs/powerls.png',
+        html`<a href="https://github.com/JRJurman/PowerLS">github.com/JRJurman/PowerLS</a>`,
+        html`
+          <h4>
+            PowerShell Script to display files and directories like unix's ls.
+            Provides colorful and simple output, making navigation easier.
+          </h4>
+        `
+      )}
     </div>
   `
 }
 
-},{"choo/html":6}],47:[function(require,module,exports){
+},{"../elements/projectblock":41,"../elements/textblock":42,"choo/html":6}],47:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
-const pictureBlock = require('../custom-elements/picture-block');
-
 const containerStyle = `
-  text-align: center;
   max-width: 600px;
   margin: auto;
 `
 
 module.exports = () => {
   return html`
-    <div class="text-danger" style=${containerStyle}>
-      <h1>
-        Projects Page is in the works!<br>
-        Come back soon!
-      </h1>
+    <div class="text-warning" style=${containerStyle}>
+      ${textblock(
+        html`<img src='/assets/movies/gremlins2.png'>`,
+        html`<h2>
+          Resume is in the works!
+          Come back soon!
+        </h2>`
+      )}
     </div>
   `
 }
 
-},{"../custom-elements/picture-block":37,"../elements/textblock":42,"choo/html":6}],48:[function(require,module,exports){
+},{"../elements/textblock":42,"choo/html":6}],48:[function(require,module,exports){
 const html = require('choo/html');
+const textblock = require('../elements/textblock');
+const projectblock = require('../elements/projectblock');
 
 const containerStyle = `
-  text-align: center;
-  margin: 0em 4em;
+  max-width: 600px;
+  margin: auto;
+`
+
+const reverseStyle = `
+  transform: scaleX(-1);
+`
+
+const projectTitleStyle = `
+  margin: 0px;
 `
 
 module.exports = () => {
   return html`
-    <div class="text-warning" style=${containerStyle}>
-      <h1>
-        Resume is in the works!<br>
-        Come back soon!
-      </h1>
+    <div class="text-danger" style=${containerStyle}>
+      ${textblock(
+        html`<img  src='/assets/movies/gizmo2.png'
+              style=${reverseStyle}></img>`,
+        html`<h2>
+          I love building small web-apps.
+          Below I've listed a couple that
+          you can play with right now!
+        </h2>`
+      )}
+      ${projectblock(
+        'Pianola', '/assets/programs/pianola.png',
+        html`<a href="http://jrjurman.com/pianola">jrjurman.com/pianola</a>`,
+        html`
+          <h4>
+            React app to display piano chords and scales.
+            Great on mobile and print!
+            Uses SVG logic for rendering and <a href="http://saebekassebil.github.io/teoria/">teoria.js</a> for chords.
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Cellular Automata', '/assets/programs/cells.png',
+        html`<a href="https://chtinahow.github.io/cellular-automata/">chtinahow.github.io/cellular-automata</a>`,
+        html`
+          <h4>
+            React app to build and display 1D cellular automata patterns.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'jrjurman.com', '/assets/programs/website.png',
+        html`<a href="http://jrjurman.com/">jrjurman.com</a>`,
+        html`
+          <h4>
+            Choo app to display interests and portfolio of work.
+            Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations, <a href="https://choo.io/">choo</a> for composition and routing.
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Vigenere', '/assets/programs/vigenere.png',
+        html`<a href="http://jrjurman.com/vigenere">jrjurman.com/vigenere</a>`,
+        html`
+          <h4>
+            Simple Choo app to encrypt messages using Vigenere encryption.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Password Generator', '/assets/programs/password.png',
+        html`<a href="http://jrjurman.com/password-generator/">jrjurman.com/password-generator</a>`,
+        html`
+          <h4>
+            Simple React app to build passwords with different customizations.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Is it a Word?', '/assets/programs/word.png',
+        html`<a href="http://jrjurman.com/isitaword/">jrjurman.com/isitaword</a>`,
+        html`
+          <h4>
+            Simple vanilla JS app that tells you if something is a word. Great for Scrabble!
+            Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Tic-Tac-React', '/assets/programs/tictacreact.png',
+        html`<a href="https://chtinahow.github.io/tic-tac-react/">chtinahow.github.io/tic-tac-react/</a>`,
+        html`
+          <h4>
+            Simple React app to play Tic-Tac-Toe.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
     </div>
   `
 }
 
-},{"choo/html":6}]},{},[43]);
+},{"../elements/projectblock":41,"../elements/textblock":42,"choo/html":6}]},{},[43]);
