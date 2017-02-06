@@ -23,8 +23,8 @@ module.exports = () => {
               style=${reverseStyle}></img>`,
         html`<h3>
           I love building small web-apps.
-          Below I've listed a couple that
-          you can play with right now!
+          Below I've listed a couple of apps
+          that you can play with right now!
         </h3>`
       )}
       ${projectblock(
