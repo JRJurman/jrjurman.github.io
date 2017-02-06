@@ -17,17 +17,17 @@ module.exports = () => {
     <div class="text-info" style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/galaxina.png'>`,
-        html`<h2>
+        html`<h3>
           Aside from web apps, I've worked on small libraries,
           chrome extensions, and desktop apps.
-        </h2>`
+        </h3>`
       )}
       ${textblock(
         html`<img src='/assets/movies/barbarella.png'>`,
-        html`<h2>
+        html`<h3>
           Below I've listed some of my favorites, but you can view them all on
           <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
-        </h2>`
+        </h3>`
       )}
       ${projectblock(
         'Ticket Printer', '/assets/programs/ticketprinter.png',

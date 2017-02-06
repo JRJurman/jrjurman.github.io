@@ -13,8 +13,8 @@ module.exports = (first, second) => {
     const childCopy = child.cloneNode(true);
     if (child.tagName === 'IMG') {
       // this is an image tag, add styles to it
-      childCopy.style.width = '3.3em';
-      childCopy.style.height = '3.3em';
+      childCopy.style.width = '3.0em';
+      childCopy.style.height = '3.0em';
       childCopy.style.borderRadius = '50%';
       childCopy.style.border = 'solid 1px #454545';
     }
@@ -23,7 +23,7 @@ module.exports = (first, second) => {
       childCopy.style.margin = '0px';
     }
     return childCopy;
-  })
+  });
 
   return html`
     <h2 style=${containerStyle}>

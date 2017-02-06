@@ -21,11 +21,11 @@ module.exports = () => {
       ${textblock(
         html`<img  src='/assets/movies/gizmo2.png'
               style=${reverseStyle}></img>`,
-        html`<h2>
+        html`<h3>
           I love building small web-apps.
           Below I've listed a couple that
           you can play with right now!
-        </h2>`
+        </h3>`
       )}
       ${projectblock(
         'Pianola', '/assets/programs/pianola.png',

@@ -11,10 +11,10 @@ module.exports = () => {
     <div class="text-warning" style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/gremlins2.png'>`,
-        html`<h2>
-          Resume is in the works!
+        html`<h3>
+          Resume is in the works, I PROMISE!
           Come back soon!
-        </h2>`
+        </h3>`
       )}
     </div>
   `
