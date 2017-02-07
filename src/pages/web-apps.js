@@ -19,13 +19,12 @@ module.exports = () => {
   return html`
     <div class="text-danger" style=${containerStyle}>
       ${textblock(
-        html`<img  src='/assets/movies/gizmo2.png'
-              style=${reverseStyle}></img>`,
         html`<h3>
           I love building small web-apps.
           Below I've listed a couple of apps
           that you can play with right now!
-        </h3>`
+        </h3>`,
+        html`<img  src='/assets/movies/gizmo2.png'>`
       )}
       ${projectblock(
         'Pianola', '/assets/programs/pianola.png',

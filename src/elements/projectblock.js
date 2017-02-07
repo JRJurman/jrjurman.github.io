@@ -16,7 +16,7 @@ const titleLinkStyle = `
 
 module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
 
-  const reverseCall = reverse ? 'reverse' : 'slice';
+  const reverseCall = reverse ? 'reverse' : 'reverse';
 
   return html`
     ${textblock.apply(this, [
