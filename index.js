@@ -4020,7 +4020,7 @@ const titleLinkStyle = `
 
 module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
 
-  const reverseCall = reverse ? 'reverse' : 'slice';
+  const reverseCall = reverse ? 'reverse' : 'reverse';
 
   return html`
     ${textblock.apply(this, [
@@ -4207,18 +4207,18 @@ module.exports = () => {
   return html`
     <div class="text-info" style=${containerStyle}>
       ${textblock(
-        html`<img src='/assets/movies/galaxina.png'>`,
+        html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>
           Aside from web apps, I've worked on small libraries,
-          chrome extensions, and desktop apps.
+          chrome extensions, hardware projects, and desktop apps.
         </h3>`
       )}
       ${textblock(
-        html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>
           Below I've listed some of my favorites, but you can view them all on
           <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
-        </h3>`
+        </h3>`,
+        html`<img src='/assets/movies/galaxina.png'>`
       )}
       ${projectblock(
         'Ticket Printer', '/assets/programs/ticketprinter.png',
@@ -4252,7 +4252,7 @@ module.exports = () => {
         html`<a href="https://github.com/JRJurman/SpaceJam">github.com/JRJurman/SpaceJam</a>`,
         html`
           <h4>
-            A collaborative project by RIT students in the Society of Software 
+            A collaborative project by RIT students in the Society of Software
             Engineers and the Center for Imaging Science to make a true 3D display.
             Read more at:
             <a href="https://jrjurman.github.io/SpaceJam/">jrjurman.com/SpaceJam</a>
@@ -4329,13 +4329,12 @@ module.exports = () => {
   return html`
     <div class="text-danger" style=${containerStyle}>
       ${textblock(
-        html`<img  src='/assets/movies/gizmo2.png'
-              style=${reverseStyle}></img>`,
         html`<h3>
           I love building small web-apps.
           Below I've listed a couple of apps
           that you can play with right now!
-        </h3>`
+        </h3>`,
+        html`<img  src='/assets/movies/gizmo2.png'>`
       )}
       ${projectblock(
         'Pianola', '/assets/programs/pianola.png',
