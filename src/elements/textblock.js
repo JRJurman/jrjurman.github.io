@@ -10,19 +10,18 @@ const containerStyle = `
 module.exports = (first, second) => {
 
   const children = [first, second].map((child) => {
-    const childCopy = child.cloneNode(true);
     if (child.tagName === 'IMG') {
       // this is an image tag, add styles to it
-      childCopy.style.width = '3.0em';
-      childCopy.style.height = '3.0em';
-      childCopy.style.borderRadius = '50%';
-      childCopy.style.border = 'solid 1px #454545';
+      child.style.width = '3.0em';
+      child.style.height = '3.0em';
+      child.style.borderRadius = '50%';
+      child.style.border = 'solid 1px #454545';
     }
     if (child.tagName && child.tagName.indexOf('H') === 0) {
       // this is an image tag, add styles to it
-      childCopy.style.margin = '0px';
+      child.style.margin = '0px';
     }
-    return childCopy;
+    return child;
   });
 
   return html`

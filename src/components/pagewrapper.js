@@ -4,19 +4,33 @@ const { actions } = require('../models/renderState');
 
 module.exports = (page, state, prev, send) => {
   let vhs = (() => {
-    if (  (!prev) ||
-          (prev.location.pathname !== state.location.pathname)
-    ) {
-      send(actions.pause);
-      send(actions.rerender, !prev ? 1400 : 100);
-      return {'display':'none'};
+    // don't run this logic if we're server-side-rendering
+    if (!state.server) {
+      if (  (!prev) ||
+            (prev.location.pathname !== state.location.pathname)
+      ) {
+        send(actions.pause);
+        send(actions.rerender, !prev ? 1400 : 100);
+        return {'display':'none'};
+      }
+    } else {
+      return {
+        display:'inherit',
+        className:''
+      };
     }
 
     if (state.paused) {
-      return {'display':'none'};
+      return {
+        display:'none',
+        className: ''
+      };
     }
     else {
-      return {'className':"vhs-flicker"};
+      return {
+        display:'inherit',
+        className:"vhs-flicker"
+      };
     }
   })();
 

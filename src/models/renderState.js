@@ -1,6 +1,7 @@
 const renderState = {
   state: {
-    paused: true
+    paused: true,
+    server: false
   },
   reducers: {
     pause: (state) => {

@@ -1,27 +1,32 @@
 const fs = require('fs');
+const html = require('choo/html');
 
+const app = require('../src/app');
+const template = require('../public/template');
 const root = './dist';
-const routes = ['about', 'projects', 'resume', 'web-apps'];
-const content = './dist/index.html';
+const routes = ['', 'about', 'projects', 'resume', 'web-apps'];
 const copyName = 'index.html';
 
-// read the index.html
-fs.readFile(content, (readerr, index) => {
-  if (readerr) throw readerr;
 
-  // iterate through each route we'll be hosting
-  routes.forEach((path) => {
-    // make a directory in the root
-    fs.mkdir( [root, path].join('/'), (direrr) => {
-      if (direrr) throw direrr;
+// iterate through each route we'll be hosting
+routes.forEach((path) => {
 
-      // write a copy of index to the route path
-      const copyPath = [root, path, copyName].join('/');
-      fs.writeFile(copyPath, index, (err) => {
-        if (err) throw err;
-      });
+  // get the DOM of the path (for noscript)
+  const page = `
+    <noscript>
+      ${app.toString(`/${path}`, {server: true})}
+    </noscript>
+  `;
 
-    } );
-  });
+  const indexPage = template(page);
 
+  // make a directory in the root
+  fs.mkdir( [root, path].join('/'), (direrr) => {
+    // write a copy of index to the route path
+    const copyPath = [root, path, copyName].join('/');
+    fs.writeFile(copyPath, indexPage, (err) => {
+      if (err) throw err;
+    });
+
+  } );
 });
