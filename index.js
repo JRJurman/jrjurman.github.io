@@ -3783,6 +3783,35 @@ module.exports = [
 ]
 
 },{}],35:[function(require,module,exports){
+const choo = require('choo');
+const html = require('choo/html');
+const app = choo();
+
+const layout = require('./components/layout');
+const about = require('./pages/about');
+const webapps = require('./pages/web-apps');
+const projects = require('./pages/projects');
+const resume = require('./pages/resume');
+
+const renderState = require('./models/renderState');
+
+app.model(renderState);
+
+app.router([
+  ['/', layout.bind(this, about)],
+  ['about', layout.bind(this, about)],
+  ['about/', layout.bind(this, about)],
+  ['web-apps', layout.bind(this, webapps)],
+  ['web-apps/', layout.bind(this, webapps)],
+  ['projects', layout.bind(this, projects)],
+  ['projects/', layout.bind(this, projects)],
+  ['resume', layout.bind(this, resume)],
+  ['resume/', layout.bind(this, resume)]
+]);
+
+module.exports = app;
+
+},{"./components/layout":36,"./models/renderState":45,"./pages/about":46,"./pages/projects":47,"./pages/resume":48,"./pages/web-apps":49,"choo":7,"choo/html":6}],36:[function(require,module,exports){
 const html = require('choo/html');
 
 const header = require('../elements/header');
@@ -3828,26 +3857,40 @@ module.exports = (pageComponent, state, prev, send) => {
   `
 }
 
-},{"../elements/footer":37,"../elements/header":38,"../elements/navbar":39,"./pagewrapper":36,"choo/html":6}],36:[function(require,module,exports){
+},{"../elements/footer":38,"../elements/header":39,"../elements/navbar":40,"./pagewrapper":37,"choo/html":6}],37:[function(require,module,exports){
 const html = require('choo/html');
 
 const { actions } = require('../models/renderState');
 
 module.exports = (page, state, prev, send) => {
   let vhs = (() => {
-    if (  (!prev) ||
-          (prev.location.pathname !== state.location.pathname)
-    ) {
-      send(actions.pause);
-      send(actions.rerender, !prev ? 1400 : 100);
-      return {'display':'none'};
+    // don't run this logic if we're server-side-rendering
+    if (!state.server) {
+      if (  (!prev) ||
+            (prev.location.pathname !== state.location.pathname)
+      ) {
+        send(actions.pause);
+        send(actions.rerender, !prev ? 1400 : 100);
+        return {'display':'none'};
+      }
+    } else {
+      return {
+        display:'inherit',
+        className:''
+      };
     }
 
     if (state.paused) {
-      return {'display':'none'};
+      return {
+        display:'none',
+        className: ''
+      };
     }
     else {
-      return {'className':"vhs-flicker"};
+      return {
+        display:'inherit',
+        className:"vhs-flicker"
+      };
     }
   })();
 
@@ -3864,7 +3907,7 @@ module.exports = (page, state, prev, send) => {
   `
 }
 
-},{"../models/renderState":44,"choo/html":6}],37:[function(require,module,exports){
+},{"../models/renderState":45,"choo/html":6}],38:[function(require,module,exports){
 const html = require('choo/html');
 
 const footerStyle = `
@@ -3883,7 +3926,7 @@ module.exports = () => {
   `
 }
 
-},{"choo/html":6}],38:[function(require,module,exports){
+},{"choo/html":6}],39:[function(require,module,exports){
 const html = require('choo/html');
 
 const headerStyle = `
@@ -3943,7 +3986,7 @@ module.exports = () => {
   `
 }
 
-},{"choo/html":6}],39:[function(require,module,exports){
+},{"choo/html":6}],40:[function(require,module,exports){
 const html = require('choo/html');
 
 const navbutton = require('./navbutton');
@@ -3982,7 +4025,7 @@ module.exports = () => {
   `
 }
 
-},{"./navbutton":40,"choo/html":6}],40:[function(require,module,exports){
+},{"./navbutton":41,"choo/html":6}],41:[function(require,module,exports){
 const html = require('choo/html');
 
 const linkStyle = `
@@ -4001,7 +4044,7 @@ module.exports = (text, link) => {
   `
 }
 
-},{"choo/html":6}],41:[function(require,module,exports){
+},{"choo/html":6}],42:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4039,7 +4082,7 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
   `
 }
 
-},{"../elements/textblock":42,"choo/html":6}],42:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],43:[function(require,module,exports){
 const html = require('choo/html');
 
 const containerStyle = `
@@ -4052,19 +4095,18 @@ const containerStyle = `
 module.exports = (first, second) => {
 
   const children = [first, second].map((child) => {
-    const childCopy = child.cloneNode(true);
     if (child.tagName === 'IMG') {
       // this is an image tag, add styles to it
-      childCopy.style.width = '3.0em';
-      childCopy.style.height = '3.0em';
-      childCopy.style.borderRadius = '50%';
-      childCopy.style.border = 'solid 1px #454545';
+      child.style.width = '3.0em';
+      child.style.height = '3.0em';
+      child.style.borderRadius = '50%';
+      child.style.border = 'solid 1px #454545';
     }
     if (child.tagName && child.tagName.indexOf('H') === 0) {
       // this is an image tag, add styles to it
-      childCopy.style.margin = '0px';
+      child.style.margin = '0px';
     }
-    return childCopy;
+    return child;
   });
 
   return html`
@@ -4076,40 +4118,17 @@ module.exports = (first, second) => {
   `
 }
 
-},{"choo/html":6}],43:[function(require,module,exports){
-const choo = require('choo');
-const html = require('choo/html');
-const app = choo();
-
-const layout = require('./components/layout');
-const about = require('./pages/about');
-const webapps = require('./pages/web-apps');
-const projects = require('./pages/projects');
-const resume = require('./pages/resume');
-
-const renderState = require('./models/renderState');
-
-app.model(renderState);
-
-app.router([
-  ['/', layout.bind(this, about)],
-  ['about', layout.bind(this, about)],
-  ['about/', layout.bind(this, about)],
-  ['web-apps', layout.bind(this, webapps)],
-  ['web-apps/', layout.bind(this, webapps)],
-  ['projects', layout.bind(this, projects)],
-  ['projects/', layout.bind(this, projects)],
-  ['resume', layout.bind(this, resume)],
-  ['resume/', layout.bind(this, resume)]
-]);
+},{"choo/html":6}],44:[function(require,module,exports){
+const app = require('./app');
 
 const tree = app.start();
 document.body.appendChild(tree);
 
-},{"./components/layout":35,"./models/renderState":44,"./pages/about":45,"./pages/projects":46,"./pages/resume":47,"./pages/web-apps":48,"choo":7,"choo/html":6}],44:[function(require,module,exports){
+},{"./app":35}],45:[function(require,module,exports){
 const renderState = {
   state: {
-    paused: true
+    paused: true,
+    server: false
   },
   reducers: {
     pause: (state) => {
@@ -4142,7 +4161,7 @@ module.exports = {
   actions: actions
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4188,7 +4207,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/textblock":42,"choo/html":6}],46:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],47:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -4284,7 +4303,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/projectblock":41,"../elements/textblock":42,"choo/html":6}],47:[function(require,module,exports){
+},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}],48:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4307,7 +4326,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/textblock":42,"choo/html":6}],48:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],49:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -4411,4 +4430,4 @@ module.exports = () => {
   `
 }
 
-},{"../elements/projectblock":41,"../elements/textblock":42,"choo/html":6}]},{},[43]);
+},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}]},{},[44]);
