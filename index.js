@@ -4168,6 +4168,7 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
+  color: #1a5494;
 `
 
 const reverseStyle = `
@@ -4176,7 +4177,7 @@ const reverseStyle = `
 
 module.exports = () => {
   return html`
-    <div class="text-primary" style=${containerStyle}>
+    <div style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/howard.png'>`,
         html`<h3>
@@ -4215,6 +4216,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
+  color: #704586;
 `
 
 const reverseStyle = `
@@ -4224,7 +4226,7 @@ const reverseStyle = `
 
 module.exports = () => {
   return html`
-    <div class="text-info" style=${containerStyle}>
+    <div style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>
@@ -4310,11 +4312,12 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
+  color: #a74d11;
 `
 
 module.exports = () => {
   return html`
-    <div class="text-warning" style=${containerStyle}>
+    <div style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/gremlins2.png'>`,
         html`<h3>
@@ -4334,6 +4337,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
+  color: #9e0225;
 `
 
 const reverseStyle = `
@@ -4346,7 +4350,7 @@ const projectTitleStyle = `
 
 module.exports = () => {
   return html`
-    <div class="text-danger" style=${containerStyle}>
+    <div style=${containerStyle}>
       ${textblock(
         html`<h3>
           I love building small web-apps.
