@@ -492,7 +492,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":23}],2:[function(require,module,exports){
+},{"util/":27}],2:[function(require,module,exports){
 module.exports = applyHook
 
 // apply arguments onto an array of functions, useful for hooks
@@ -812,12 +812,163 @@ function wrapHook (value, transforms) {
   return value
 }
 
-},{"./apply-hook":2,"assert":1,"nanotick":12,"xtend":27,"xtend/mutable":28}],4:[function(require,module,exports){
+},{"./apply-hook":2,"assert":1,"nanotick":15,"xtend":31,"xtend/mutable":32}],4:[function(require,module,exports){
+var document = require('global/document')
+var hyperx = require('hyperx')
+var onload = require('on-load')
 
-},{}],5:[function(require,module,exports){
+var SVGNS = 'http://www.w3.org/2000/svg'
+var XLINKNS = 'http://www.w3.org/1999/xlink'
+
+var BOOL_PROPS = {
+  autofocus: 1,
+  checked: 1,
+  defaultchecked: 1,
+  disabled: 1,
+  formnovalidate: 1,
+  indeterminate: 1,
+  readonly: 1,
+  required: 1,
+  selected: 1,
+  willvalidate: 1
+}
+var SVG_TAGS = [
+  'svg',
+  'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor',
+  'animateMotion', 'animateTransform', 'circle', 'clipPath', 'color-profile',
+  'cursor', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix',
+  'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
+  'feDisplacementMap', 'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB',
+  'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
+  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
+  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
+  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
+  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
+  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
+  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
+  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
+  'tspan', 'use', 'view', 'vkern'
+]
+
+function belCreateElement (tag, props, children) {
+  var el
+
+  // If an svg tag, it needs a namespace
+  if (SVG_TAGS.indexOf(tag) !== -1) {
+    props.namespace = SVGNS
+  }
+
+  // If we are using a namespace
+  var ns = false
+  if (props.namespace) {
+    ns = props.namespace
+    delete props.namespace
+  }
+
+  // Create the element
+  if (ns) {
+    el = document.createElementNS(ns, tag)
+  } else {
+    el = document.createElement(tag)
+  }
+
+  // If adding onload events
+  if (props.onload || props.onunload) {
+    var load = props.onload || function () {}
+    var unload = props.onunload || function () {}
+    onload(el, function belOnload () {
+      load(el)
+    }, function belOnunload () {
+      unload(el)
+    },
+    // We have to use non-standard `caller` to find who invokes `belCreateElement`
+    belCreateElement.caller.caller.caller)
+    delete props.onload
+    delete props.onunload
+  }
+
+  // Create the properties
+  for (var p in props) {
+    if (props.hasOwnProperty(p)) {
+      var key = p.toLowerCase()
+      var val = props[p]
+      // Normalize className
+      if (key === 'classname') {
+        key = 'class'
+        p = 'class'
+      }
+      // The for attribute gets transformed to htmlFor, but we just set as for
+      if (p === 'htmlFor') {
+        p = 'for'
+      }
+      // If a property is boolean, set itself to the key
+      if (BOOL_PROPS[key]) {
+        if (val === 'true') val = key
+        else if (val === 'false') continue
+      }
+      // If a property prefers being set directly vs setAttribute
+      if (key.slice(0, 2) === 'on') {
+        el[p] = val
+      } else {
+        if (ns) {
+          if (p === 'xlink:href') {
+            el.setAttributeNS(XLINKNS, p, val)
+          } else if (/^xmlns($|:)/i.test(p)) {
+            // skip xmlns definitions
+          } else {
+            el.setAttributeNS(null, p, val)
+          }
+        } else {
+          el.setAttribute(p, val)
+        }
+      }
+    }
+  }
+
+  function appendChild (childs) {
+    if (!Array.isArray(childs)) return
+    for (var i = 0; i < childs.length; i++) {
+      var node = childs[i]
+      if (Array.isArray(node)) {
+        appendChild(node)
+        continue
+      }
+
+      if (typeof node === 'number' ||
+        typeof node === 'boolean' ||
+        node instanceof Date ||
+        node instanceof RegExp) {
+        node = node.toString()
+      }
+
+      if (typeof node === 'string') {
+        if (el.lastChild && el.lastChild.nodeName === '#text') {
+          el.lastChild.nodeValue += node
+          continue
+        }
+        node = document.createTextNode(node)
+      }
+
+      if (node && node.nodeType) {
+        el.appendChild(node)
+      }
+    }
+  }
+  appendChild(children)
+
+  return el
+}
+
+module.exports = hyperx(belCreateElement)
+module.exports.default = module.exports
+module.exports.createElement = belCreateElement
+
+},{"global/document":8,"hyperx":11,"on-load":16}],5:[function(require,module,exports){
+
+},{}],6:[function(require,module,exports){
 module.exports = require('yo-yo')
 
-},{"yo-yo":29}],6:[function(require,module,exports){
+},{"yo-yo":33}],7:[function(require,module,exports){
 const createLocation = require('sheet-router/create-location')
 const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
@@ -1035,7 +1186,7 @@ function createLocationModel (opts) {
   }
 }
 
-},{"assert":1,"barracks":3,"nanoraf":11,"sheet-router":18,"sheet-router/create-location":15,"sheet-router/history":16,"sheet-router/href":17,"sheet-router/walk":20,"xtend":27,"xtend/mutable":28,"yo-yo":29}],7:[function(require,module,exports){
+},{"assert":1,"barracks":3,"nanoraf":14,"sheet-router":22,"sheet-router/create-location":19,"sheet-router/history":20,"sheet-router/href":21,"sheet-router/walk":24,"xtend":31,"xtend/mutable":32,"yo-yo":33}],8:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -1054,7 +1205,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":4}],8:[function(require,module,exports){
+},{"min-document":5}],9:[function(require,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -1067,7 +1218,293 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+module.exports = attributeToProperty
+
+var transform = {
+  'class': 'className',
+  'for': 'htmlFor',
+  'http-equiv': 'httpEquiv'
+}
+
+function attributeToProperty (h) {
+  return function (tagName, attrs, children) {
+    for (var attr in attrs) {
+      if (attr in transform) {
+        attrs[transform[attr]] = attrs[attr]
+        delete attrs[attr]
+      }
+    }
+    return h(tagName, attrs, children)
+  }
+}
+
+},{}],11:[function(require,module,exports){
+var attrToProp = require('hyperscript-attribute-to-property')
+
+var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
+var ATTR_KEY = 5, ATTR_KEY_W = 6
+var ATTR_VALUE_W = 7, ATTR_VALUE = 8
+var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
+var ATTR_EQ = 11, ATTR_BREAK = 12
+
+module.exports = function (h, opts) {
+  h = attrToProp(h)
+  if (!opts) opts = {}
+  var concat = opts.concat || function (a, b) {
+    return String(a) + String(b)
+  }
+
+  return function (strings) {
+    var state = TEXT, reg = ''
+    var arglen = arguments.length
+    var parts = []
+
+    for (var i = 0; i < strings.length; i++) {
+      if (i < arglen - 1) {
+        var arg = arguments[i+1]
+        var p = parse(strings[i])
+        var xstate = state
+        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
+        if (xstate === ATTR) xstate = ATTR_KEY
+        p.push([ VAR, xstate, arg ])
+        parts.push.apply(parts, p)
+      } else parts.push.apply(parts, parse(strings[i]))
+    }
+
+    var tree = [null,{},[]]
+    var stack = [[tree,-1]]
+    for (var i = 0; i < parts.length; i++) {
+      var cur = stack[stack.length-1][0]
+      var p = parts[i], s = p[0]
+      if (s === OPEN && /^\//.test(p[1])) {
+        var ix = stack[stack.length-1][1]
+        if (stack.length > 1) {
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === OPEN) {
+        var c = [p[1],{},[]]
+        cur[2].push(c)
+        stack.push([c,cur[2].length-1])
+      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
+        var key = ''
+        var copyKey
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_KEY) {
+            key = concat(key, parts[i][1])
+          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
+            if (typeof parts[i][2] === 'object' && !key) {
+              for (copyKey in parts[i][2]) {
+                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
+                  cur[1][copyKey] = parts[i][2][copyKey]
+                }
+              }
+            } else {
+              key = concat(key, parts[i][2])
+            }
+          } else break
+        }
+        if (parts[i][0] === ATTR_EQ) i++
+        var j = i
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
+            else cur[1][key] = concat(cur[1][key], parts[i][1])
+          } else if (parts[i][0] === VAR
+          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
+            else cur[1][key] = concat(cur[1][key], parts[i][2])
+          } else {
+            if (key.length && !cur[1][key] && i === j
+            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
+              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
+              // empty string is falsy, not well behaved value in browser
+              cur[1][key] = key.toLowerCase()
+            }
+            break
+          }
+        }
+      } else if (s === ATTR_KEY) {
+        cur[1][p[1]] = true
+      } else if (s === VAR && p[1] === ATTR_KEY) {
+        cur[1][p[2]] = true
+      } else if (s === CLOSE) {
+        if (selfClosing(cur[0]) && stack.length) {
+          var ix = stack[stack.length-1][1]
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === VAR && p[1] === TEXT) {
+        if (p[2] === undefined || p[2] === null) p[2] = ''
+        else if (!p[2]) p[2] = concat('', p[2])
+        if (Array.isArray(p[2][0])) {
+          cur[2].push.apply(cur[2], p[2])
+        } else {
+          cur[2].push(p[2])
+        }
+      } else if (s === TEXT) {
+        cur[2].push(p[1])
+      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
+        // no-op
+      } else {
+        throw new Error('unhandled: ' + s)
+      }
+    }
+
+    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
+      tree[2].shift()
+    }
+
+    if (tree[2].length > 2
+    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
+      throw new Error(
+        'multiple root elements must be wrapped in an enclosing tag'
+      )
+    }
+    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
+    && Array.isArray(tree[2][0][2])) {
+      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
+    }
+    return tree[2][0]
+
+    function parse (str) {
+      var res = []
+      if (state === ATTR_VALUE_W) state = ATTR
+      for (var i = 0; i < str.length; i++) {
+        var c = str.charAt(i)
+        if (state === TEXT && c === '<') {
+          if (reg.length) res.push([TEXT, reg])
+          reg = ''
+          state = OPEN
+        } else if (c === '>' && !quot(state)) {
+          if (state === OPEN) {
+            res.push([OPEN,reg])
+          } else if (state === ATTR_KEY) {
+            res.push([ATTR_KEY,reg])
+          } else if (state === ATTR_VALUE && reg.length) {
+            res.push([ATTR_VALUE,reg])
+          }
+          res.push([CLOSE])
+          reg = ''
+          state = TEXT
+        } else if (state === TEXT) {
+          reg += c
+        } else if (state === OPEN && /\s/.test(c)) {
+          res.push([OPEN, reg])
+          reg = ''
+          state = ATTR
+        } else if (state === OPEN) {
+          reg += c
+        } else if (state === ATTR && /[\w-]/.test(c)) {
+          state = ATTR_KEY
+          reg = c
+        } else if (state === ATTR && /\s/.test(c)) {
+          if (reg.length) res.push([ATTR_KEY,reg])
+          res.push([ATTR_BREAK])
+        } else if (state === ATTR_KEY && /\s/.test(c)) {
+          res.push([ATTR_KEY,reg])
+          reg = ''
+          state = ATTR_KEY_W
+        } else if (state === ATTR_KEY && c === '=') {
+          res.push([ATTR_KEY,reg],[ATTR_EQ])
+          reg = ''
+          state = ATTR_VALUE_W
+        } else if (state === ATTR_KEY) {
+          reg += c
+        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
+          res.push([ATTR_EQ])
+          state = ATTR_VALUE_W
+        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
+          res.push([ATTR_BREAK])
+          if (/[\w-]/.test(c)) {
+            reg += c
+            state = ATTR_KEY
+          } else state = ATTR
+        } else if (state === ATTR_VALUE_W && c === '"') {
+          state = ATTR_VALUE_DQ
+        } else if (state === ATTR_VALUE_W && c === "'") {
+          state = ATTR_VALUE_SQ
+        } else if (state === ATTR_VALUE_DQ && c === '"') {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_SQ && c === "'") {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
+          state = ATTR_VALUE
+          i--
+        } else if (state === ATTR_VALUE && /\s/.test(c)) {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
+        || state === ATTR_VALUE_DQ) {
+          reg += c
+        }
+      }
+      if (state === TEXT && reg.length) {
+        res.push([TEXT,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_DQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_SQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_KEY) {
+        res.push([ATTR_KEY,reg])
+        reg = ''
+      }
+      return res
+    }
+  }
+
+  function strfn (x) {
+    if (typeof x === 'function') return x
+    else if (typeof x === 'string') return x
+    else if (x && typeof x === 'object') return x
+    else return concat('', x)
+  }
+}
+
+function quot (state) {
+  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
+}
+
+var hasOwn = Object.prototype.hasOwnProperty
+function has (obj, key) { return hasOwn.call(obj, key) }
+
+var closeRE = RegExp('^(' + [
+  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
+  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
+  'source', 'track', 'wbr',
+  // SVG TAGS
+  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
+  'feBlend', 'feColorMatrix', 'feComposite',
+  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
+  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
+  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
+  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
+  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
+  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
+  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
+  'vkern'
+].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
+function selfClosing (tag) { return closeRE.test(tag) }
+
+},{"hyperscript-attribute-to-property":10}],12:[function(require,module,exports){
 (function (process){
 // https://github.com/electron/electron/issues/2288
 function isElectron() {
@@ -1083,7 +1520,7 @@ function isElectron() {
 module.exports = isElectron;
 
 }).call(this,require('_process'))
-},{"_process":13}],10:[function(require,module,exports){
+},{"_process":17}],13:[function(require,module,exports){
 'use strict';
 // Create a range object for efficently rendering strings to elements.
 var range;
@@ -1736,7 +2173,7 @@ function morphdom(fromNode, toNode, options) {
 
 module.exports = morphdom;
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var window = require('global/window')
 var assert = require('assert')
 
@@ -1782,7 +2219,7 @@ function nanoraf (render, raf) {
   }
 }
 
-},{"assert":1,"global/window":8}],12:[function(require,module,exports){
+},{"assert":1,"global/window":9}],15:[function(require,module,exports){
 /* eslint-disable no-eval */
 var assert = require('assert')
 
@@ -1840,7 +2277,96 @@ function nanotick () {
   }
 }
 
-},{"assert":1}],13:[function(require,module,exports){
+},{"assert":1}],16:[function(require,module,exports){
+/* global MutationObserver */
+var document = require('global/document')
+var window = require('global/window')
+var watch = Object.create(null)
+var KEY_ID = 'onloadid' + (new Date() % 9e6).toString(36)
+var KEY_ATTR = 'data-' + KEY_ID
+var INDEX = 0
+
+if (window && window.MutationObserver) {
+  var observer = new MutationObserver(function (mutations) {
+    if (Object.keys(watch).length < 1) return
+    for (var i = 0; i < mutations.length; i++) {
+      if (mutations[i].attributeName === KEY_ATTR) {
+        eachAttr(mutations[i], turnon, turnoff)
+        continue
+      }
+      eachMutation(mutations[i].removedNodes, turnoff)
+      eachMutation(mutations[i].addedNodes, turnon)
+    }
+  })
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: [KEY_ATTR]
+  })
+}
+
+module.exports = function onload (el, on, off, caller) {
+  on = on || function () {}
+  off = off || function () {}
+  el.setAttribute(KEY_ATTR, 'o' + INDEX)
+  watch['o' + INDEX] = [on, off, 0, caller || onload.caller]
+  INDEX += 1
+  return el
+}
+
+function turnon (index, el) {
+  if (watch[index][0] && watch[index][2] === 0) {
+    watch[index][0](el)
+    watch[index][2] = 1
+  }
+}
+
+function turnoff (index, el) {
+  if (watch[index][1] && watch[index][2] === 1) {
+    watch[index][1](el)
+    watch[index][2] = 0
+  }
+}
+
+function eachAttr (mutation, on, off) {
+  var newValue = mutation.target.getAttribute(KEY_ATTR)
+  if (sameOrigin(mutation.oldValue, newValue)) {
+    watch[newValue] = watch[mutation.oldValue]
+    return
+  }
+  if (watch[mutation.oldValue]) {
+    off(mutation.oldValue, mutation.target)
+  }
+  if (watch[newValue]) {
+    on(newValue, mutation.target)
+  }
+}
+
+function sameOrigin (oldValue, newValue) {
+  if (!oldValue || !newValue) return false
+  return watch[oldValue][3] === watch[newValue][3]
+}
+
+function eachMutation (nodes, fn) {
+  var keys = Object.keys(watch)
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i] && nodes[i].getAttribute && nodes[i].getAttribute(KEY_ATTR)) {
+      var onloadid = nodes[i].getAttribute(KEY_ATTR)
+      keys.forEach(function (k) {
+        if (onloadid === k) {
+          fn(k, nodes[i])
+        }
+      })
+    }
+    if (nodes[i].childNodes.length > 0) {
+      eachMutation(nodes[i].childNodes, fn)
+    }
+  }
+}
+
+},{"global/document":8,"global/window":9}],17:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -2022,7 +2548,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* eslint-disable no-useless-escape */
 const electron = '^(file:\/\/|\/)(.*\.html?\/?)?'
 const protocol = '^(http(s)?(:\/\/))?(www\.)?'
@@ -2046,7 +2572,7 @@ function pathname (route, isElectron) {
   return route.replace(suffix, '').replace(normalize, '/')
 }
 
-},{}],15:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 const document = require('global/document')
 const assert = require('assert')
 const xtend = require('xtend')
@@ -2100,7 +2626,7 @@ function createLocation (state, patch) {
   }
 }
 
-},{"./qs":19,"assert":1,"global/document":7,"xtend":27}],16:[function(require,module,exports){
+},{"./qs":23,"assert":1,"global/document":8,"xtend":31}],20:[function(require,module,exports){
 const document = require('global/document')
 const window = require('global/window')
 const assert = require('assert')
@@ -2122,7 +2648,7 @@ function history (cb) {
   }
 }
 
-},{"assert":1,"global/document":7,"global/window":8}],17:[function(require,module,exports){
+},{"assert":1,"global/document":8,"global/window":9}],21:[function(require,module,exports){
 const window = require('global/window')
 const assert = require('assert')
 
@@ -2165,7 +2691,7 @@ function href (cb, root) {
   }
 }
 
-},{"./qs":19,"assert":1,"global/window":8}],18:[function(require,module,exports){
+},{"./qs":23,"assert":1,"global/window":9}],22:[function(require,module,exports){
 const pathname = require('./_pathname')
 const wayfarer = require('wayfarer')
 const assert = require('assert')
@@ -2271,7 +2797,7 @@ function thunkify (cb) {
   }
 }
 
-},{"./_pathname":14,"assert":1,"is-electron":9,"wayfarer":24}],19:[function(require,module,exports){
+},{"./_pathname":18,"assert":1,"is-electron":12,"wayfarer":28}],23:[function(require,module,exports){
 const window = require('global/window')
 
 const decodeURIComponent = window.decodeURIComponent
@@ -2290,7 +2816,7 @@ function qs (uri) {
   }
 }
 
-},{"global/window":8}],20:[function(require,module,exports){
+},{"global/window":9}],24:[function(require,module,exports){
 const walk = require('wayfarer/walk')
 const assert = require('assert')
 
@@ -2304,7 +2830,7 @@ function walkSheetRouter (router, cb) {
   return walk(router, cb)
 }
 
-},{"assert":1,"wayfarer/walk":26}],21:[function(require,module,exports){
+},{"assert":1,"wayfarer/walk":30}],25:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2329,14 +2855,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],22:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],23:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2926,7 +3452,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":22,"_process":13,"inherits":21}],24:[function(require,module,exports){
+},{"./support/isBuffer":26,"_process":17,"inherits":25}],28:[function(require,module,exports){
 const assert = require('assert')
 const trie = require('./trie')
 
@@ -2990,7 +3516,7 @@ function Wayfarer (dft) {
   }
 }
 
-},{"./trie":25,"assert":1}],25:[function(require,module,exports){
+},{"./trie":29,"assert":1}],29:[function(require,module,exports){
 const mutate = require('xtend/mutable')
 const assert = require('assert')
 const xtend = require('xtend')
@@ -3107,7 +3633,7 @@ Trie.prototype.mount = function (route, trie) {
   }
 }
 
-},{"assert":1,"xtend":27,"xtend/mutable":28}],26:[function(require,module,exports){
+},{"assert":1,"xtend":31,"xtend/mutable":32}],30:[function(require,module,exports){
 const assert = require('assert')
 
 module.exports = walk
@@ -3140,7 +3666,7 @@ function walk (router, transform) {
   })('', trie.trie)
 }
 
-},{"assert":1}],27:[function(require,module,exports){
+},{"assert":1}],31:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -3161,7 +3687,7 @@ function extend() {
     return target
 }
 
-},{}],28:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -3180,8 +3706,8 @@ function extend(target) {
     return target
 }
 
-},{}],29:[function(require,module,exports){
-var bel = {} // turns template tag into DOM elements
+},{}],33:[function(require,module,exports){
+var bel = require('bel') // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
 
@@ -3218,7 +3744,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":30,"morphdom":10}],30:[function(require,module,exports){
+},{"./update-events.js":34,"bel":4,"morphdom":13}],34:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -3256,34 +3782,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],31:[function(require,module,exports){
-module.exports = function yoyoifyAppendChild (el, childs) {
-  for (var i = 0; i < childs.length; i++) {
-    var node = childs[i]
-    if (Array.isArray(node)) {
-      yoyoifyAppendChild(el, node)
-      continue
-    }
-    if (typeof node === 'number' ||
-      typeof node === 'boolean' ||
-      node instanceof Date ||
-      node instanceof RegExp) {
-      node = node.toString()
-    }
-    if (typeof node === 'string') {
-      if (el.lastChild && el.lastChild.nodeName === '#text') {
-        el.lastChild.nodeValue += node
-        continue
-      }
-      node = document.createTextNode(node)
-    }
-    if (node && node.nodeType) {
-      el.appendChild(node)
-    }
-  }
-}
-
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 const choo = require('choo');
 const html = require('choo/html');
 const app = choo();
@@ -3312,7 +3811,7 @@ app.router([
 
 module.exports = app;
 
-},{"./components/layout":33,"./models/renderState":42,"./pages/about":43,"./pages/projects":44,"./pages/resume":45,"./pages/web-apps":46,"choo":6,"choo/html":5}],33:[function(require,module,exports){
+},{"./components/layout":36,"./models/renderState":45,"./pages/about":46,"./pages/projects":47,"./pages/resume":48,"./pages/web-apps":49,"choo":7,"choo/html":6}],36:[function(require,module,exports){
 const html = require('choo/html');
 
 const header = require('../elements/header');
@@ -3343,26 +3842,22 @@ const navbarStyle = `
 module.exports = (pageComponent, state, prev, send) => {
   const page = pageWrapper.bind(this, pageComponent, state, prev, send);
 
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel3 = document.createElement("div")
-bel3.setAttribute("style", arguments[6])
-var bel2 = document.createElement("div")
-bel2.setAttribute("style", arguments[4])
-var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-ac(bel0, ["\n          ",arguments[1],"\n        "])
-var bel1 = document.createElement("div")
-bel1.setAttribute("style", arguments[2])
-ac(bel1, ["\n          ",arguments[3],"\n        "])
-ac(bel2, ["\n        ",arguments[5],"\n        ",bel0,"\n        ",bel1,"\n      "])
-ac(bel3, ["\n      ",bel2,"\n    "])
-      return bel3
-    }(navbarStyle,navbar(),pageStyle,page(),chromeStyle,header(),bodyStyle))
+  return html`
+    <div style=${bodyStyle}>
+      <div style=${chromeStyle}>
+        ${header()}
+        <div style=${navbarStyle}>
+          ${navbar()}
+        </div>
+        <div style=${pageStyle}>
+          ${page()}
+        </div>
+      </div>
+    </div>
+  `
 }
 
-},{"../elements/footer":35,"../elements/header":36,"../elements/navbar":37,"./pagewrapper":34,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],34:[function(require,module,exports){
+},{"../elements/footer":38,"../elements/header":39,"../elements/navbar":40,"./pagewrapper":37,"choo/html":6}],37:[function(require,module,exports){
 const html = require('choo/html');
 
 const { actions } = require('../models/renderState');
@@ -3405,18 +3900,14 @@ module.exports = (page, state, prev, send) => {
 
   const vhsClass = vhs.className;
 
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-bel0.setAttribute("class", arguments[1])
-ac(bel0, ["\n      ",arguments[2],"\n    "])
-      return bel0
-    }(vhsDisplay,vhsClass,page()))
+  return html`
+    <div style=${vhsDisplay} class=${vhsClass}>
+      ${page()}
+    </div>
+  `
 }
 
-},{"../models/renderState":42,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],35:[function(require,module,exports){
+},{"../models/renderState":45,"choo/html":6}],38:[function(require,module,exports){
 const html = require('choo/html');
 
 const footerStyle = `
@@ -3428,20 +3919,14 @@ const footerStyle = `
 `
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("footer")
-bel1.setAttribute("style", arguments[0])
-bel1.setAttribute("class", "vhs-bottom vhs-delay-6")
-var bel0 = document.createElement("h5")
-ac(bel0, ["Jesse Jurman"])
-ac(bel1, ["\n      ",bel0,"\n    "])
-      return bel1
-    }(footerStyle))
+  return html`
+    <footer style=${footerStyle} class="vhs-bottom vhs-delay-6">
+      <h5>Jesse Jurman</h5>
+    </footer>
+  `
 }
 
-},{"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],36:[function(require,module,exports){
+},{"choo/html":6}],39:[function(require,module,exports){
 const html = require('choo/html');
 
 const headerStyle = `
@@ -3482,39 +3967,26 @@ const placeholderStyle = `
 `
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel7 = document.createElement("div")
-var bel6 = document.createElement("div")
-bel6.setAttribute("style", arguments[5])
-var bel1 = document.createElement("h1")
-bel1.setAttribute("class", "vhs-flicker vhs-delay-3")
-var bel0 = document.createElement("a")
-bel0.setAttribute("style", arguments[0])
-bel0.setAttribute("href", "/")
-ac(bel0, ["\n            Jesse Jurman\n          "])
-ac(bel1, ["\n          ",bel0,"\n        "])
-var bel3 = document.createElement("h1")
-bel3.setAttribute("style", arguments[2])
-var bel2 = document.createElement("img")
-bel2.setAttribute("style", arguments[1])
-bel2.setAttribute("src", "/assets/jrjurman.png")
-ac(bel3, ["\n          ",bel2,"\n        "])
-var bel5 = document.createElement("h1")
-bel5.setAttribute("style", arguments[4])
-bel5.setAttribute("class", "vhs-flicker vhs-delay-3")
-var bel4 = document.createElement("img")
-bel4.setAttribute("style", arguments[3])
-bel4.setAttribute("src", "/assets/jrjurman.png")
-ac(bel5, ["\n          ",bel4,"\n        "])
-ac(bel6, ["\n        ",bel1,"\n        ",bel3,"\n        ",bel5,"\n      "])
-ac(bel7, ["\n      ",bel6,"\n    "])
-      return bel7
-    }(linkStyle,placeholderStyle,headerPlaceholderStyle,imageStyle,headerImageStyle,headerStyle))
+  return html`
+    <div>
+      <div style=${headerStyle}>
+        <h1 class="vhs-flicker vhs-delay-3">
+          <a style=${linkStyle} href="/">
+            Jesse Jurman
+          </a>
+        </h1>
+        <h1 style=${headerPlaceholderStyle}>
+          <img style=${placeholderStyle} src="/assets/jrjurman.png">
+        </h1>
+        <h1 style=${headerImageStyle} class="vhs-flicker vhs-delay-3">
+          <img style=${imageStyle} src="/assets/jrjurman.png">
+        </h1>
+      </div>
+    </div>
+  `
 }
 
-},{"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],37:[function(require,module,exports){
+},{"choo/html":6}],40:[function(require,module,exports){
 const html = require('choo/html');
 
 const navbutton = require('./navbutton');
@@ -3540,35 +4012,20 @@ module.exports = () => {
   const github = navbutton.bind(this, 'Projects', '/projects');
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel6 = document.createElement("div")
-bel6.setAttribute("style", arguments[6])
-bel6.setAttribute("class", "vhs-flicker vhs-delay-5")
-var bel5 = document.createElement("div")
-bel5.setAttribute("style", arguments[5])
-var bel0 = document.createElement("div")
-bel0.setAttribute("class", "text-primary")
-ac(bel0, [arguments[0]])
-var bel1 = document.createElement("div")
-bel1.setAttribute("class", "text-danger")
-ac(bel1, [arguments[1]])
-var bel2 = document.createElement("div")
-bel2.setAttribute("style", arguments[2])
-var bel3 = document.createElement("div")
-bel3.setAttribute("class", "text-info")
-ac(bel3, [arguments[3]])
-var bel4 = document.createElement("div")
-bel4.setAttribute("class", "text-warning")
-ac(bel4, [arguments[4]])
-ac(bel5, ["\n        ",bel0,"\n        ",bel1,"\n        ",bel2,"\n        ",bel3,"\n        ",bel4,"\n      "])
-ac(bel6, ["\n      ",bel5,"\n    "])
-      return bel6
-    }(about(),projects(),navPlaceholderStyle,github(),resume(),navbarStyle,containerStyle))
+  return html`
+    <div style=${containerStyle} class="vhs-flicker vhs-delay-5">
+      <div style=${navbarStyle}>
+        <div class="text-primary">${about()}</div>
+        <div class="text-danger">${projects()}</div>
+        <div style=${navPlaceholderStyle}></div>
+        <div class="text-info">${github()}</div>
+        <div class="text-warning">${resume()}</div>
+      </div>
+    </div>
+  `
 }
 
-},{"./navbutton":38,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],38:[function(require,module,exports){
+},{"./navbutton":41,"choo/html":6}],41:[function(require,module,exports){
 const html = require('choo/html');
 
 const linkStyle = `
@@ -3577,20 +4034,17 @@ const linkStyle = `
 `
 
 module.exports = (text, link) => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h3")
-var bel0 = document.createElement("a")
-bel0.setAttribute("style", arguments[0])
-bel0.setAttribute("href", arguments[1])
-ac(bel0, ["\n        ",arguments[2],"\n      "])
-ac(bel1, ["\n      ",bel0,"\n    "])
-      return bel1
-    }(linkStyle,link,text))
+  return html`
+    <h3>
+      <a  style=${linkStyle}
+          href="${link}">
+        ${text}
+      </a>
+    </h3>
+  `
 }
 
-},{"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],39:[function(require,module,exports){
+},{"choo/html":6}],42:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -3613,35 +4067,22 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
 
   return html`
     ${textblock.apply(this, [
-      (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel3 = document.createElement("h3")
-bel3.setAttribute("style", arguments[6])
-var bel0 = document.createElement("a")
-bel0.setAttribute("style", arguments[0])
-bel0.setAttribute("href", arguments[1])
-ac(bel0, ["\n              ",arguments[2],"\n        "])
-var bel1 = document.createElement("h5")
-bel1.setAttribute("style", arguments[3])
-ac(bel1, [arguments[4]])
-var bel2 = document.createElement("h4")
-ac(bel2, ["\n          ",arguments[5],"\n        "])
-ac(bel3, ["\n        ",bel0,"\n        ",bel1,"\n        ",bel2,"\n      "])
-      return bel3
-    }(titleLinkStyle,linkDOM.href,title,linkStyle,linkDOM,contentDOM,projectTitleStyle)),
-      (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", arguments[0])
-      return bel0
-    }(imageSRC))
+      html`<h3 style=${projectTitleStyle}>
+        <a  style=${titleLinkStyle}
+            href=${linkDOM.href}>
+              ${title}
+        </a>
+        <h5 style=${linkStyle}>${linkDOM}</h5>
+        <h4>
+          ${contentDOM}
+        </h4>
+      </h3>`,
+      html`<img src='${imageSRC}'>`
     ][reverseCall]())}
   `
 }
 
-},{"../elements/textblock":40,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],40:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],43:[function(require,module,exports){
 const html = require('choo/html');
 
 const containerStyle = `
@@ -3668,25 +4109,22 @@ module.exports = (first, second) => {
     return child;
   });
 
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h2")
-bel1.setAttribute("style", arguments[0])
-var bel0 = document.createElement("div")
-bel0.setAttribute("style", "margin: 0.25em")
-ac(bel1, ["\n      ",arguments[1],"\n      ",bel0,"\n      ",arguments[2],"\n    "])
-      return bel1
-    }(containerStyle,children[0],children[1]))
+  return html`
+    <h2 style=${containerStyle}>
+      ${children[0]}
+      <div style='margin: 0.25em'></div>
+      ${children[1]}
+    </h2>
+  `
 }
 
-},{"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],41:[function(require,module,exports){
+},{"choo/html":6}],44:[function(require,module,exports){
 const app = require('./app');
 
 const tree = app.start();
 document.body.appendChild(tree);
 
-},{"./app":32}],42:[function(require,module,exports){
+},{"./app":35}],45:[function(require,module,exports){
 const renderState = {
   state: {
     paused: true,
@@ -3723,7 +4161,7 @@ module.exports = {
   actions: actions
 }
 
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -3738,63 +4176,39 @@ const reverseStyle = `
 `
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-ac(bel0, ["\n      ",arguments[1],"\n      ",arguments[2],"\n      ",arguments[3],"\n    "])
-      return bel0
-    }(containerStyle,textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/howard.png")
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n          My name is Jesse Jurman.\n          I'm a Software Engineer\n          working at Constant Contact.\n        "])
-      return bel0
-    }())
-      ),textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n          I'm passionate about software architecture,\n          front-end development,\n          and software development process models.\n        "])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/robbie.png")
-      return bel0
-    }())
-      ),textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/transformers.png")
-bel0.setAttribute("style", arguments[0])
-      return bel0
-    }(reverseStyle)),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n        I enjoy building tiny web-apps,\n        collecting laserdiscs,\n        playing board games,\n        and watching 80s movies.\n        "])
-      return bel0
-    }())
-      )))
+  return html`
+    <div style=${containerStyle}>
+      ${textblock(
+        html`<img src='/assets/movies/howard.png'>`,
+        html`<h3>
+          My name is Jesse Jurman.
+          I'm a Software Engineer
+          working at Constant Contact.
+        </h3>`
+      )}
+      ${textblock(
+        html`<h3>
+          I'm passionate about software architecture,
+          front-end development,
+          and software development process models.
+        </h3>`,
+        html`<img src='/assets/movies/robbie.png'>`
+      )}
+      ${textblock(
+        html`<img  src='/assets/movies/transformers.png'
+              style=${reverseStyle}></img>`,
+        html`<h3>
+        I enjoy building tiny web-apps,
+        collecting laserdiscs,
+        playing board games,
+        and watching 80s movies.
+        </h3>`
+      )}
+    </div>
+  `
 }
 
-},{"../elements/textblock":40,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],44:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],47:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -3811,159 +4225,87 @@ const reverseStyle = `
 
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-ac(bel0, ["\n      ",arguments[1],"\n      ",arguments[2],"\n      ",arguments[3],"\n      ",arguments[4],"\n      ",arguments[5],"\n      ",arguments[6],"\n      ",arguments[7],"\n    "])
-      return bel0
-    }(containerStyle,textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/barbarella.png")
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n          Aside from web apps, I've worked on small libraries,\n          chrome extensions, hardware projects, and desktop apps.\n        "])
-      return bel0
-    }())
-      ),textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h3")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman")
-ac(bel0, ["github.com/JRJurman"])
-ac(bel1, ["\n          Below I've listed some of my favorites, but you can view them all on\n          ",bel0,".\n        "])
-      return bel1
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/galaxina.png")
-      return bel0
-    }())
-      ),projectblock(
+  return html`
+    <div style=${containerStyle}>
+      ${textblock(
+        html`<img src='/assets/movies/barbarella.png'>`,
+        html`<h3>
+          Aside from web apps, I've worked on small libraries,
+          chrome extensions, hardware projects, and desktop apps.
+        </h3>`
+      )}
+      ${textblock(
+        html`<h3>
+          Below I've listed some of my favorites, but you can view them all on
+          <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
+        </h3>`,
+        html`<img src='/assets/movies/galaxina.png'>`
+      )}
+      ${projectblock(
         'Ticket Printer', '/assets/programs/ticketprinter.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman/ticket-printer")
-ac(bel0, ["github.com/JRJurman/ticket-printer"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel4 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://www.adafruit.com/products/597")
-ac(bel0, ["receipt printer"])
-var bel1 = document.createElement("a")
-bel1.setAttribute("href", "https://tessel.io/")
-ac(bel1, ["Tessel 2"])
-var bel2 = document.createElement("a")
-bel2.setAttribute("href", "https://www.youtube.com/watch?v=sOBhAbXNgUI")
-ac(bel2, ["in action"])
-var bel3 = document.createElement("a")
-bel3.setAttribute("href", "https://www.youtube.com/watch?v=84utpGbwJKU")
-ac(bel3, ["the hardware"])
-ac(bel4, ["\n            Chrome Extension and Server to print work items from Jira, Trello, and Github.\n            Uses a ",bel0,",\n            and a ",bel1,".\n            You can watch it ",bel2,"\n            or hear about ",bel3," on youtube!\n          "])
-      return bel4
-    }())
-      ),projectblock(
+        html`<a href="https://github.com/JRJurman/ticket-printer">github.com/JRJurman/ticket-printer</a>`,
+        html`
+          <h4>
+            Chrome Extension and Server to print work items from Jira, Trello, and Github.
+            Uses a <a href="https://www.adafruit.com/products/597">receipt printer</a>,
+            and a <a href="https://tessel.io/">Tessel 2</a>.
+            You can watch it <a href="https://www.youtube.com/watch?v=sOBhAbXNgUI">in action</a>
+            or hear about <a href="https://www.youtube.com/watch?v=84utpGbwJKU">the hardware</a> on youtube!
+          </h4>
+        `
+      )}
+      ${projectblock(
         'ASLe16', '/assets/programs/asle16.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman/ASLe16")
-ac(bel0, ["github.com/JRJurman/ASLe16"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel2 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/ethanjurman")
-ac(bel0, ["Ethan Jurman"])
-var bel1 = document.createElement("a")
-bel1.setAttribute("href", "https://github.com/JRJurman/ASLe16/blob/master/termpaper.pdf")
-ac(bel1, ["\n            You can read the term paper written on github.\n            "])
-ac(bel2, ["\n            Collaborative project with ",bel0,"\n            to build an encoding of American Sign Language that fits into a 16 bit space.\n            Uses python for logic and blender for rendering poses.\n            ",bel1,"\n          "])
-      return bel2
-    }())
-      ),projectblock(
+        html`<a href="https://github.com/JRJurman/ASLe16">github.com/JRJurman/ASLe16</a>`,
+        html`
+          <h4>
+            Collaborative project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
+            to build an encoding of American Sign Language that fits into a 16 bit space.
+            Uses python for logic and blender for rendering poses.
+            <a href="https://github.com/JRJurman/ASLe16/blob/master/termpaper.pdf">
+            You can read the term paper written on github.
+            </a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Space Jam - 3D Volumetric Display Software', '/assets/programs/spacejam.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman/SpaceJam")
-ac(bel0, ["github.com/JRJurman/SpaceJam"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/SpaceJam/")
-ac(bel0, ["jrjurman.com/SpaceJam"])
-ac(bel1, ["\n            A collaborative project by RIT students in the Society of Software\n            Engineers and the Center for Imaging Science to make a true 3D display.\n            Read more at:\n            ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://github.com/JRJurman/SpaceJam">github.com/JRJurman/SpaceJam</a>`,
+        html`
+          <h4>
+            A collaborative project by RIT students in the Society of Software
+            Engineers and the Center for Imaging Science to make a true 3D display.
+            Read more at:
+            <a href="https://jrjurman.github.io/SpaceJam/">jrjurman.com/SpaceJam</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'localinstall', '/assets/programs/localinstall.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman/localinstall")
-ac(bel0, ["github.com/JRJurman/localinstall"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://www.npmjs.com/package/localinstall")
-ac(bel0, ["Read more on npmjs"])
-ac(bel1, ["\n            npm package to pack and install npm packages into themselves.\n            Useful for running tests against the distributable that other npm users will be using.\n            ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://github.com/JRJurman/localinstall">github.com/JRJurman/localinstall</a>`,
+        html`
+          <h4>
+            npm package to pack and install npm packages into themselves.
+            Useful for running tests against the distributable that other npm users will be using.
+            <a href="https://www.npmjs.com/package/localinstall">Read more on npmjs</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'PowerLS', '/assets/programs/powerls.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/JRJurman/PowerLS")
-ac(bel0, ["github.com/JRJurman/PowerLS"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h4")
-ac(bel0, ["\n            PowerShell Script to display files and directories like unix's ls.\n            Provides colorful and simple output, making navigation easier.\n          "])
-      return bel0
-    }())
-      )))
+        html`<a href="https://github.com/JRJurman/PowerLS">github.com/JRJurman/PowerLS</a>`,
+        html`
+          <h4>
+            PowerShell Script to display files and directories like unix's ls.
+            Provides colorful and simple output, making navigation easier.
+          </h4>
+        `
+      )}
+    </div>
+  `
 }
 
-},{"../elements/projectblock":39,"../elements/textblock":40,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],45:[function(require,module,exports){
+},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}],48:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -3974,32 +4316,20 @@ const containerStyle = `
 `
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-ac(bel0, ["\n      ",arguments[1],"\n    "])
-      return bel0
-    }(containerStyle,textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/gremlins2.png")
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n          Resume is in the works, I PROMISE!\n          Come back soon!\n        "])
-      return bel0
-    }())
-      )))
+  return html`
+    <div style=${containerStyle}>
+      ${textblock(
+        html`<img src='/assets/movies/gremlins2.png'>`,
+        html`<h3>
+          Resume is in the works, I PROMISE!
+          Come back soon!
+        </h3>`
+      )}
+    </div>
+  `
 }
 
-},{"../elements/textblock":40,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}],46:[function(require,module,exports){
+},{"../elements/textblock":43,"choo/html":6}],49:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -4019,172 +4349,89 @@ const projectTitleStyle = `
 `
 
 module.exports = () => {
-  return (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("div")
-bel0.setAttribute("style", arguments[0])
-ac(bel0, ["\n      ",arguments[1],"\n      ",arguments[2],"\n      ",arguments[3],"\n      ",arguments[4],"\n      ",arguments[5],"\n      ",arguments[6],"\n      ",arguments[7],"\n      ",arguments[8],"\n    "])
-      return bel0
-    }(containerStyle,textblock(
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("h3")
-ac(bel0, ["\n          I love building small web-apps.\n          Below I've listed a couple of apps\n          that you can play with right now!\n        "])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("img")
-bel0.setAttribute("src", "/assets/movies/gizmo2.png")
-      return bel0
-    }())
-      ),projectblock(
+  return html`
+    <div style=${containerStyle}>
+      ${textblock(
+        html`<h3>
+          I love building small web-apps.
+          Below I've listed a couple of apps
+          that you can play with right now!
+        </h3>`,
+        html`<img  src='/assets/movies/gizmo2.png'>`
+      )}
+      ${projectblock(
         'Pianola', '/assets/programs/pianola.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/pianola")
-ac(bel0, ["jrjurman.com/pianola"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "http://saebekassebil.github.io/teoria/")
-ac(bel0, ["teoria.js"])
-ac(bel1, ["\n            React app to display piano chords and scales.\n            Great on mobile and print!\n            Uses SVG logic for rendering and ",bel0," for chords.\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://jrjurman.github.io/pianola">jrjurman.com/pianola</a>`,
+        html`
+          <h4>
+            React app to display piano chords and scales.
+            Great on mobile and print!
+            Uses SVG logic for rendering and <a href="http://saebekassebil.github.io/teoria/">teoria.js</a> for chords.
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Cellular Automata', '/assets/programs/cells.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://chtinahow.github.io/cellular-automata/")
-ac(bel0, ["chtinahow.github.io/cellular-automata"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/chtinahow/")
-ac(bel0, ["Tina Howard"])
-ac(bel1, ["\n            React app to build and display 1D cellular automata patterns.\n            Collaborative Project with ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://chtinahow.github.io/cellular-automata/">chtinahow.github.io/cellular-automata</a>`,
+        html`
+          <h4>
+            React app to build and display 1D cellular automata patterns.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'jrjurman.com', '/assets/programs/website.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/")
-ac(bel0, ["jrjurman.com"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel2 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "http://jxnblk.com/vhs/")
-ac(bel0, ["vhs"])
-var bel1 = document.createElement("a")
-bel1.setAttribute("href", "https://choo.io/")
-ac(bel1, ["choo"])
-ac(bel2, ["\n            Choo app to display interests and portfolio of work.\n            Uses ",bel0," for css animations, ",bel1," for composition and routing.\n          "])
-      return bel2
-    }())
-      ),projectblock(
+        html`<a href="https://jrjurman.github.io/">jrjurman.com</a>`,
+        html`
+          <h4>
+            Choo app to display interests and portfolio of work.
+            Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations, <a href="https://choo.io/">choo</a> for composition and routing.
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Vigenere', '/assets/programs/vigenere.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/vigenere")
-ac(bel0, ["jrjurman.com/vigenere"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/chtinahow/")
-ac(bel0, ["Tina Howard"])
-ac(bel1, ["\n            Simple Choo app to encrypt messages using Vigenere encryption.\n            Collaborative Project with ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://jrjurman.github.io/vigenere">jrjurman.com/vigenere</a>`,
+        html`
+          <h4>
+            Simple Choo app to encrypt messages using Vigenere encryption.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Password Generator', '/assets/programs/password.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/password-generator/")
-ac(bel0, ["jrjurman.com/password-generator"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/chtinahow/")
-ac(bel0, ["Tina Howard"])
-ac(bel1, ["\n            Simple React app to build passwords with different customizations.\n            Collaborative Project with ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://jrjurman.github.io/password-generator/">jrjurman.com/password-generator</a>`,
+        html`
+          <h4>
+            Simple React app to build passwords with different customizations.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Is it a Word?', '/assets/programs/word.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://jrjurman.github.io/isitaword/")
-ac(bel0, ["jrjurman.com/isitaword"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/ethanjurman")
-ac(bel0, ["Ethan Jurman"])
-ac(bel1, ["\n            Simple vanilla JS app that tells you if something is a word. Great for Scrabble!\n            Collaborative Project with ",bel0,"\n          "])
-      return bel1
-    }())
-      ),projectblock(
+        html`<a href="https://jrjurman.github.io/isitaword/">jrjurman.com/isitaword</a>`,
+        html`
+          <h4>
+            Simple vanilla JS app that tells you if something is a word. Great for Scrabble!
+            Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Tic-Tac-React', '/assets/programs/tictacreact.png',
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://chtinahow.github.io/tic-tac-react/")
-ac(bel0, ["chtinahow.github.io/tic-tac-react/"])
-      return bel0
-    }()),
-        (function () {
-      
-      var ac = require('/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js')
-      var bel1 = document.createElement("h4")
-var bel0 = document.createElement("a")
-bel0.setAttribute("href", "https://github.com/chtinahow/")
-ac(bel0, ["Tina Howard"])
-ac(bel1, ["\n            Simple React app to play Tic-Tac-Toe.\n            Collaborative Project with ",bel0,"\n          "])
-      return bel1
-    }())
-      )))
+        html`<a href="https://chtinahow.github.io/tic-tac-react/">chtinahow.github.io/tic-tac-react/</a>`,
+        html`
+          <h4>
+            Simple React app to play Tic-Tac-Toe.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+    </div>
+  `
 }
 
-},{"../elements/projectblock":39,"../elements/textblock":40,"/Users/jjurman/Programs/jrjurman.github.io/node_modules/yo-yoify/lib/appendChild.js":31,"choo/html":5}]},{},[41]);
+},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}]},{},[44]);
