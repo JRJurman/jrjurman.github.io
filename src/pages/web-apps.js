@@ -5,7 +5,6 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #9e0225;
 `
 
 const reverseStyle = `
@@ -18,7 +17,7 @@ const projectTitleStyle = `
 
 module.exports = () => {
   return html`
-    <div style=${containerStyle}>
+    <div class="text-danger" style=${containerStyle}>
       ${textblock(
         html`<h3>
           I love building small web-apps.

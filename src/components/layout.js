@@ -1,12 +1,10 @@
 const html = require('choo/html');
 
-const header = require('../elements/header');
+const iconheader = require('../elements/iconheader');
 const navbar = require('../elements/navbar');
 const footer = require('../elements/footer');
 const pageWrapper = require('./pagewrapper');
 
-const bodyStyle = `
-`
 
 const chromeStyle = `
   margin: auto;
@@ -21,23 +19,19 @@ const pageStyle = `
 `
 
 const navbarStyle = `
-  margin-top: -5em;
-  margin-bottom: 2em;
 `
 
 module.exports = (pageComponent, state, prev, send) => {
   const page = pageWrapper.bind(this, pageComponent, state, prev, send);
 
   return html`
-    <div style=${bodyStyle}>
-      <div style=${chromeStyle}>
-        ${header()}
-        <div style=${navbarStyle}>
-          ${navbar()}
-        </div>
-        <div style=${pageStyle}>
-          ${page()}
-        </div>
+    <div style=${chromeStyle}>
+      ${iconheader()}
+      <div style=${navbarStyle}>
+        ${navbar()}
+      </div>
+      <div style=${pageStyle}>
+        ${page()}
       </div>
     </div>
   `

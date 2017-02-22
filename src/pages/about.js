@@ -4,7 +4,6 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #1a5494;
 `
 
 const reverseStyle = `
@@ -13,7 +12,7 @@ const reverseStyle = `
 
 module.exports = () => {
   return html`
-    <div style=${containerStyle}>
+    <div class="text-primary" style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/howard.png'>`,
         html`<h3>

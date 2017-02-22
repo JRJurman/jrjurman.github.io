@@ -5,7 +5,6 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #704586;
 `
 
 const reverseStyle = `
@@ -15,7 +14,7 @@ const reverseStyle = `
 
 module.exports = () => {
   return html`
-    <div style=${containerStyle}>
+    <div class="text-info" style=${containerStyle}>
       ${textblock(
         html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>

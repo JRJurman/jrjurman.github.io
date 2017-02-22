@@ -6,30 +6,40 @@ const containerStyle = `
   display: block;
 `
 
-const navbarStyle = `
+const backgroundNavbarStyle = `
+  margin: auto;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -4.42em;
+  color: gray;
+`
+
+const frontNavbarStyle = `
   margin: auto;
   max-width: 600px;
   display: flex;
   justify-content: space-between;
 `
 
-const navPlaceholderStyle = `
-  width: 6em;
-`
-
 module.exports = () => {
   const about = navbutton.bind(this, 'About', '/about');
-  const projects = navbutton.bind(this, 'Web Apps', '/web-apps');
-  const github = navbutton.bind(this, 'Projects', '/projects');
+  const webApps = navbutton.bind(this, 'Web Apps', '/web-apps');
+  const projects = navbutton.bind(this, 'Projects', '/projects');
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
   return html`
-    <div style=${containerStyle} class="vhs-flicker vhs-delay-5">
-      <div style=${navbarStyle}>
+    <div style=${containerStyle}>
+      <div style=${backgroundNavbarStyle}>
+        <div>${about()}</div>
+        <div>${webApps()}</div>
+        <div>${projects()}</div>
+        <div>${resume()}</div>
+      </div>
+      <div style=${frontNavbarStyle} class="vhs-flicker vhs-delay-3">
         <div class="text-primary">${about()}</div>
-        <div class="text-danger">${projects()}</div>
-        <div style=${navPlaceholderStyle}></div>
-        <div class="text-info">${github()}</div>
+        <div class="text-danger">${webApps()}</div>
+        <div class="text-info">${projects()}</div>
         <div class="text-warning">${resume()}</div>
       </div>
     </div>
