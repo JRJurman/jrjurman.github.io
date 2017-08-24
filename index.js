@@ -3811,7 +3811,7 @@ app.router([
 
 module.exports = app;
 
-},{"./components/layout":36,"./models/renderState":45,"./pages/about":46,"./pages/projects":47,"./pages/resume":48,"./pages/web-apps":49,"choo":7,"choo/html":6}],36:[function(require,module,exports){
+},{"./components/layout":36,"./models/renderState":46,"./pages/about":47,"./pages/projects":48,"./pages/resume":49,"./pages/web-apps":50,"choo":7,"choo/html":6}],36:[function(require,module,exports){
 const html = require('choo/html');
 
 const header = require('../elements/header');
@@ -3857,9 +3857,10 @@ module.exports = (pageComponent, state, prev, send) => {
   `
 }
 
-},{"../elements/footer":38,"../elements/header":39,"../elements/navbar":40,"./pagewrapper":37,"choo/html":6}],37:[function(require,module,exports){
+},{"../elements/footer":38,"../elements/header":39,"../elements/navbar":41,"./pagewrapper":37,"choo/html":6}],37:[function(require,module,exports){
 const html = require('choo/html');
 
+const imagepreloader = require('../elements/imagepreloader');
 const { actions } = require('../models/renderState');
 
 module.exports = (page, state, prev, send) => {
@@ -3889,7 +3890,7 @@ module.exports = (page, state, prev, send) => {
     else {
       return {
         display:'inherit',
-        className:"vhs-flicker"
+        className:"vhs-bottom"
       };
     }
   })();
@@ -3903,11 +3904,12 @@ module.exports = (page, state, prev, send) => {
   return html`
     <div style=${vhsDisplay} class=${vhsClass}>
       ${page()}
+      ${imagepreloader()}
     </div>
   `
 }
 
-},{"../models/renderState":45,"choo/html":6}],38:[function(require,module,exports){
+},{"../elements/imagepreloader":40,"../models/renderState":46,"choo/html":6}],38:[function(require,module,exports){
 const html = require('choo/html');
 
 const footerStyle = `
@@ -3970,7 +3972,7 @@ module.exports = () => {
   return html`
     <div>
       <div style=${headerStyle}>
-        <h1 class="vhs-flicker vhs-delay-3">
+        <h1 class="">
           <a style=${linkStyle} href="/">
             Jesse Jurman
           </a>
@@ -3978,7 +3980,7 @@ module.exports = () => {
         <h1 style=${headerPlaceholderStyle}>
           <img style=${placeholderStyle} src="/assets/jrjurman.png">
         </h1>
-        <h1 style=${headerImageStyle} class="vhs-flicker vhs-delay-3">
+        <h1 style=${headerImageStyle} class="vhs-pop vhs-delay-3">
           <img style=${imageStyle} src="/assets/jrjurman.png">
         </h1>
       </div>
@@ -3987,6 +3989,33 @@ module.exports = () => {
 }
 
 },{"choo/html":6}],40:[function(require,module,exports){
+const html = require('choo/html');
+
+const imageStyle = `
+  width: 0px; height: 0px;
+`
+
+module.exports = () => {
+  const movies = [
+    'barbarella.png', 'brazil.png', 'cobra.png', 'galaxina.png',
+    'gizmo2.png', 'gremlins2.png', 'howard.png', 'miamiconnection.png',
+    'robbie.png', 'terminator.png', 'thething.png', 'thewraith.png',
+    'transformers.png'
+  ].map(image => html`<img style=${imageStyle} src="/assets/movies/${image}">`)
+  const programs = [
+    'asle16.png', 'cells.png', 'localinstall.png', 'password.png',
+    'pianola.png', 'point-cards.png', 'point-cards.png', 'powerls.png',
+    'spacejam.png', 'ticketprinter.png', 'vigenere.png', 'website.png', 'word.png'
+  ].map(image => html`<img style=${imageStyle} src="/assets/programs/${image}">`)
+  return html`
+    <div>
+      ${movies}
+      ${programs}
+    </div>
+  `
+}
+
+},{"choo/html":6}],41:[function(require,module,exports){
 const html = require('choo/html');
 
 const navbutton = require('./navbutton');
@@ -4013,7 +4042,7 @@ module.exports = () => {
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
   return html`
-    <div style=${containerStyle} class="vhs-flicker vhs-delay-5">
+    <div style=${containerStyle} class="vhs-bottom vhs-delay-5">
       <div style=${navbarStyle}>
         <div class="text-primary">${about()}</div>
         <div class="text-danger">${projects()}</div>
@@ -4025,7 +4054,7 @@ module.exports = () => {
   `
 }
 
-},{"./navbutton":41,"choo/html":6}],41:[function(require,module,exports){
+},{"./navbutton":42,"choo/html":6}],42:[function(require,module,exports){
 const html = require('choo/html');
 
 const linkStyle = `
@@ -4044,7 +4073,7 @@ module.exports = (text, link) => {
   `
 }
 
-},{"choo/html":6}],42:[function(require,module,exports){
+},{"choo/html":6}],43:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4082,7 +4111,7 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
   `
 }
 
-},{"../elements/textblock":43,"choo/html":6}],43:[function(require,module,exports){
+},{"../elements/textblock":44,"choo/html":6}],44:[function(require,module,exports){
 const html = require('choo/html');
 
 const containerStyle = `
@@ -4118,13 +4147,13 @@ module.exports = (first, second) => {
   `
 }
 
-},{"choo/html":6}],44:[function(require,module,exports){
+},{"choo/html":6}],45:[function(require,module,exports){
 const app = require('./app');
 
 const tree = app.start();
 document.body.appendChild(tree);
 
-},{"./app":35}],45:[function(require,module,exports){
+},{"./app":35}],46:[function(require,module,exports){
 const renderState = {
   state: {
     paused: true,
@@ -4161,7 +4190,7 @@ module.exports = {
   actions: actions
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4208,7 +4237,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/textblock":43,"choo/html":6}],47:[function(require,module,exports){
+},{"../elements/textblock":44,"choo/html":6}],48:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -4230,8 +4259,8 @@ module.exports = () => {
       ${textblock(
         html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>
-          Aside from web apps, I've worked on small libraries,
-          chrome extensions, hardware projects, and desktop apps.
+          Aside from web apps, I've worked on frameworks,
+          small libraries, chrome extensions, and hardware projects.
         </h3>`
       )}
       ${textblock(
@@ -4240,6 +4269,28 @@ module.exports = () => {
           <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
         </h3>`,
         html`<img src='/assets/movies/galaxina.png'>`
+      )}
+      ${projectblock(
+        'Tram One', '/assets/programs/tram-one.png',
+        html`<a href="http://tram-one.io/">tram-one.io</a>`,
+        html`
+          <h4>
+            Batteries Included View Framework
+            You can read more about it <a href="http://tram-one.io/">on the website</a>,
+            you can see <a href="https://youtu.be/mgHJbqls-wk">a tutorial on how to use it</a>,
+            and you can read the documentation and source <a href="https://github.com/jrjurman/tram-one">on github</a>!
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'url-listener', '/assets/programs/url-listener.png',
+        html`<a href="https://github.com/JRJurman/url-listener">github.com/JRJurman/url-listener</a>`,
+        html`
+          <h4>
+            Library to help control navigation between push and pop states, url changes, and clicks.
+            <a href="https://www.npmjs.com/package/url-listener">Read more on npmjs</a>
+          </h4>
+        `
       )}
       ${projectblock(
         'Ticket Printer', '/assets/programs/ticketprinter.png',
@@ -4305,7 +4356,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}],48:[function(require,module,exports){
+},{"../elements/projectblock":43,"../elements/textblock":44,"choo/html":6}],49:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -4329,7 +4380,7 @@ module.exports = () => {
   `
 }
 
-},{"../elements/textblock":43,"choo/html":6}],49:[function(require,module,exports){
+},{"../elements/textblock":44,"choo/html":6}],50:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -4367,6 +4418,18 @@ module.exports = () => {
             React app to display piano chords and scales.
             Great on mobile and print!
             Uses SVG logic for rendering and <a href="http://saebekassebil.github.io/teoria/">teoria.js</a> for chords.
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Point Cards', '/assets/programs/point-cards.png',
+        html`<a href="http://point-cards.com/">point-cards.com</a>`,
+        html`
+          <h4>
+            App to play planning poker!
+            Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations,
+            <a href="https://www.npmjs.com/package/express-ws">express-ws</a> for web sockets,
+            and <a href="http://tram-one.io">Tram-One</a> for everything else.
           </h4>
         `
       )}
@@ -4420,18 +4483,8 @@ module.exports = () => {
           </h4>
         `
       )}
-      ${projectblock(
-        'Tic-Tac-React', '/assets/programs/tictacreact.png',
-        html`<a href="https://chtinahow.github.io/tic-tac-react/">chtinahow.github.io/tic-tac-react/</a>`,
-        html`
-          <h4>
-            Simple React app to play Tic-Tac-Toe.
-            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
-          </h4>
-        `
-      )}
     </div>
   `
 }
 
-},{"../elements/projectblock":42,"../elements/textblock":43,"choo/html":6}]},{},[44]);
+},{"../elements/projectblock":43,"../elements/textblock":44,"choo/html":6}]},{},[45]);
