@@ -39,6 +39,18 @@ module.exports = () => {
         `
       )}
       ${projectblock(
+        'Point Cards', '/assets/programs/point-cards.png',
+        html`<a href="http://point-cards.com/">point-cards.com</a>`,
+        html`
+          <h4>
+            App to play planning poker!
+            Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations,
+            <a href="https://www.npmjs.com/package/express-ws">express-ws</a> for web sockets,
+            and <a href="http://tram-one.io">Tram-One</a> for everything else.
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Cellular Automata', '/assets/programs/cells.png',
         html`<a href="https://chtinahow.github.io/cellular-automata/">chtinahow.github.io/cellular-automata</a>`,
         html`
@@ -85,16 +97,6 @@ module.exports = () => {
           <h4>
             Simple vanilla JS app that tells you if something is a word. Great for Scrabble!
             Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
-          </h4>
-        `
-      )}
-      ${projectblock(
-        'Tic-Tac-React', '/assets/programs/tictacreact.png',
-        html`<a href="https://chtinahow.github.io/tic-tac-react/">chtinahow.github.io/tic-tac-react/</a>`,
-        html`
-          <h4>
-            Simple React app to play Tic-Tac-Toe.
-            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
           </h4>
         `
       )}

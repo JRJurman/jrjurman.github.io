@@ -24,7 +24,7 @@ module.exports = () => {
   const resume = navbutton.bind(this, 'Resume', '/resume');
 
   return html`
-    <div style=${containerStyle} class="vhs-flicker vhs-delay-5">
+    <div style=${containerStyle} class="vhs-bottom vhs-delay-5">
       <div style=${navbarStyle}>
         <div class="text-primary">${about()}</div>
         <div class="text-danger">${projects()}</div>

@@ -1,5 +1,6 @@
 const html = require('choo/html');
 
+const imagepreloader = require('../elements/imagepreloader');
 const { actions } = require('../models/renderState');
 
 module.exports = (page, state, prev, send) => {
@@ -29,7 +30,7 @@ module.exports = (page, state, prev, send) => {
     else {
       return {
         display:'inherit',
-        className:"vhs-flicker"
+        className:"vhs-bottom"
       };
     }
   })();
@@ -43,6 +44,7 @@ module.exports = (page, state, prev, send) => {
   return html`
     <div style=${vhsDisplay} class=${vhsClass}>
       ${page()}
+      ${imagepreloader()}
     </div>
   `
 }

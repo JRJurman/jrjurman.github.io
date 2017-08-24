@@ -19,8 +19,8 @@ module.exports = () => {
       ${textblock(
         html`<img src='/assets/movies/barbarella.png'>`,
         html`<h3>
-          Aside from web apps, I've worked on small libraries,
-          chrome extensions, hardware projects, and desktop apps.
+          Aside from web apps, I've worked on frameworks,
+          small libraries, chrome extensions, and hardware projects.
         </h3>`
       )}
       ${textblock(
@@ -29,6 +29,28 @@ module.exports = () => {
           <a href="https://github.com/JRJurman">github.com/JRJurman</a>.
         </h3>`,
         html`<img src='/assets/movies/galaxina.png'>`
+      )}
+      ${projectblock(
+        'Tram One', '/assets/programs/tram-one.png',
+        html`<a href="http://tram-one.io/">tram-one.io</a>`,
+        html`
+          <h4>
+            Batteries Included View Framework
+            You can read more about it <a href="http://tram-one.io/">on the website</a>,
+            you can see <a href="https://youtu.be/mgHJbqls-wk">a tutorial on how to use it</a>,
+            and you can read the documentation and source <a href="https://github.com/jrjurman/tram-one">on github</a>!
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'url-listener', '/assets/programs/url-listener.png',
+        html`<a href="https://github.com/JRJurman/url-listener">github.com/JRJurman/url-listener</a>`,
+        html`
+          <h4>
+            Library to help control navigation between push and pop states, url changes, and clicks.
+            <a href="https://www.npmjs.com/package/url-listener">Read more on npmjs</a>
+          </h4>
+        `
       )}
       ${projectblock(
         'Ticket Printer', '/assets/programs/ticketprinter.png',

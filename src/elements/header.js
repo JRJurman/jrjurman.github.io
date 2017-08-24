@@ -41,7 +41,7 @@ module.exports = () => {
   return html`
     <div>
       <div style=${headerStyle}>
-        <h1 class="vhs-flicker vhs-delay-3">
+        <h1 class="">
           <a style=${linkStyle} href="/">
             Jesse Jurman
           </a>
@@ -49,7 +49,7 @@ module.exports = () => {
         <h1 style=${headerPlaceholderStyle}>
           <img style=${placeholderStyle} src="/assets/jrjurman.png">
         </h1>
-        <h1 style=${headerImageStyle} class="vhs-flicker vhs-delay-3">
+        <h1 style=${headerImageStyle} class="vhs-pop vhs-delay-3">
           <img style=${imageStyle} src="/assets/jrjurman.png">
         </h1>
       </div>
