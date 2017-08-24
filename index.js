@@ -3997,10 +3997,8 @@ const imageStyle = `
 
 module.exports = () => {
   const movies = [
-    'barbarella.png', 'brazil.png', 'cobra.png', 'galaxina.png',
-    'gizmo2.png', 'gremlins2.png', 'howard.png', 'miamiconnection.png',
-    'robbie.png', 'terminator.png', 'thething.png', 'thewraith.png',
-    'transformers.png'
+    'barbarella.png', 'galaxina.png', 'gizmo2.png', 'gremlins2.png',
+    'howard.png', 'robbie.png', 'transformers.png'
   ].map(image => html`<img style=${imageStyle} src="/assets/movies/${image}">`)
   const programs = [
     'asle16.png', 'cells.png', 'localinstall.png', 'password.png',
