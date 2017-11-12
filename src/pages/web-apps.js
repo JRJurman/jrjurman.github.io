@@ -39,6 +39,17 @@ module.exports = () => {
         `
       )}
       ${projectblock(
+        'Cocktial Curator', '/assets/programs/cocktail-curator.png',
+        html`<a href="http://www.cocktail-curator.com/">cocktail-curator.com</a>`,
+        html`
+          <h4>
+            Tram-One app to search for drinks based on ingredients.
+            Powered by <a href="thecocktaildb.com">TheCocktailDB.com</a>.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Point Cards', '/assets/programs/point-cards.png',
         html`<a href="http://point-cards.com/">point-cards.com</a>`,
         html`
@@ -67,16 +78,6 @@ module.exports = () => {
           <h4>
             Choo app to display interests and portfolio of work.
             Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations, <a href="https://choo.io/">choo</a> for composition and routing.
-          </h4>
-        `
-      )}
-      ${projectblock(
-        'Vigenere', '/assets/programs/vigenere.png',
-        html`<a href="https://jrjurman.github.io/vigenere">jrjurman.com/vigenere</a>`,
-        html`
-          <h4>
-            Simple Choo app to encrypt messages using Vigenere encryption.
-            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
           </h4>
         `
       )}

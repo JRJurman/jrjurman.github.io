@@ -38,13 +38,25 @@ module.exports = () => {
             Batteries Included View Framework
             You can read more about it <a href="http://tram-one.io/">on the website</a>,
             you can see <a href="https://youtu.be/mgHJbqls-wk">a tutorial on how to use it</a>,
-            and you can read the documentation and source <a href="https://github.com/jrjurman/tram-one">on github</a>!
+            and you can read the documentation and source <a href="https://github.com/Tram-One/tram-one">on github</a>!
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Hover Engine', '/assets/programs/hover-engine.png',
+        html`<a href="https://github.com/Tram-One/hover-engine">github.com/Tram-One/hover-engine</a>`,
+        html`
+          <h4>
+            Lightweight State-Engine Library based on Redux, with a built-in queue to handle async actions.
+            It is the state engine library powering Tram-One!
+            <a href="https://www.npmjs.com/package/hover-engine">Read more on npmjs</a>
+            Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
           </h4>
         `
       )}
       ${projectblock(
         'url-listener', '/assets/programs/url-listener.png',
-        html`<a href="https://github.com/JRJurman/url-listener">github.com/JRJurman/url-listener</a>`,
+        html`<a href="https://github.com/Tram-One/url-listener">github.com/Tram-One/url-listener</a>`,
         html`
           <h4>
             Library to help control navigation between push and pop states, url changes, and clicks.
