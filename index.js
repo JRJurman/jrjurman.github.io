@@ -4276,13 +4276,25 @@ module.exports = () => {
             Batteries Included View Framework
             You can read more about it <a href="http://tram-one.io/">on the website</a>,
             you can see <a href="https://youtu.be/mgHJbqls-wk">a tutorial on how to use it</a>,
-            and you can read the documentation and source <a href="https://github.com/jrjurman/tram-one">on github</a>!
+            and you can read the documentation and source <a href="https://github.com/Tram-One/tram-one">on github</a>!
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Hover Engine', '/assets/programs/hover-engine.png',
+        html`<a href="https://github.com/Tram-One/hover-engine">github.com/Tram-One/hover-engine</a>`,
+        html`
+          <h4>
+            Lightweight State-Engine Library based on Redux, with a built-in queue to handle async actions.
+            It is the state engine library powering Tram-One!
+            <a href="https://www.npmjs.com/package/hover-engine">Read more on npmjs</a>
+            Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
           </h4>
         `
       )}
       ${projectblock(
         'url-listener', '/assets/programs/url-listener.png',
-        html`<a href="https://github.com/JRJurman/url-listener">github.com/JRJurman/url-listener</a>`,
+        html`<a href="https://github.com/Tram-One/url-listener">github.com/Tram-One/url-listener</a>`,
         html`
           <h4>
             Library to help control navigation between push and pop states, url changes, and clicks.
@@ -4420,6 +4432,17 @@ module.exports = () => {
         `
       )}
       ${projectblock(
+        'Cocktial Curator', '/assets/programs/cocktail-curator.png',
+        html`<a href="http://www.cocktail-curator.com/">cocktail-curator.com</a>`,
+        html`
+          <h4>
+            Tram-One app to search for drinks based on ingredients.
+            Powered by <a href="thecocktaildb.com">TheCocktailDB.com</a>.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+          </h4>
+        `
+      )}
+      ${projectblock(
         'Point Cards', '/assets/programs/point-cards.png',
         html`<a href="http://point-cards.com/">point-cards.com</a>`,
         html`
@@ -4448,16 +4471,6 @@ module.exports = () => {
           <h4>
             Choo app to display interests and portfolio of work.
             Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations, <a href="https://choo.io/">choo</a> for composition and routing.
-          </h4>
-        `
-      )}
-      ${projectblock(
-        'Vigenere', '/assets/programs/vigenere.png',
-        html`<a href="https://jrjurman.github.io/vigenere">jrjurman.com/vigenere</a>`,
-        html`
-          <h4>
-            Simple Choo app to encrypt messages using Vigenere encryption.
-            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
           </h4>
         `
       )}
