@@ -4631,12 +4631,11 @@ module.exports = () => {
       )}
       ${projectblock(
         'Tram One', '/assets/programs/tram-one.png',
-        html`<a href="http://tram-one.io/">tram-one.io</a>`,
+        html`<a href="https://tram-one.io/">tram-one.io</a>`,
         html`
           <h4>
-            Batteries Included View Framework
-            You can read more about it <a href="http://tram-one.io/">on the website</a>,
-            you can see <a href="https://youtu.be/mgHJbqls-wk">a tutorial on how to use it</a>,
+            Modern View Framework For Pure Javascript
+            You can read more about it <a href="https://tram-one.io/">on the website</a>,
             and you can read the documentation and source <a href="https://github.com/Tram-One/tram-one">on github</a>!
           </h4>
         `
@@ -4699,17 +4698,6 @@ module.exports = () => {
             Engineers and the Center for Imaging Science to make a true 3D display.
             Read more at:
             <a href="https://jrjurman.github.io/SpaceJam/">jrjurman.com/SpaceJam</a>
-          </h4>
-        `
-      )}
-      ${projectblock(
-        'localinstall', '/assets/programs/localinstall.png',
-        html`<a href="https://github.com/JRJurman/localinstall">github.com/JRJurman/localinstall</a>`,
-        html`
-          <h4>
-            npm package to pack and install npm packages into themselves.
-            Useful for running tests against the distributable that other npm users will be using.
-            <a href="https://www.npmjs.com/package/localinstall">Read more on npmjs</a>
           </h4>
         `
       )}
@@ -4794,7 +4782,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Team-Dex', '/assets/programs/team-dex.png',
-        html`<a href="https://team-dex.surge.sh/">https://team-dex.surge.sh/</a>`,
+        html`<a href="https://team-dex.surge.sh/">team-dex.surge.sh</a>`,
         html`
           <h4>
             App to see detailed information about Pokemon in a Team.
@@ -4818,7 +4806,7 @@ module.exports = () => {
       )}
       ${projectblock(
         'Scroll-Counter', '/assets/programs/scroll-counter.png',
-        html`<a href="https://scroll-counter.surge.sh/">https://scroll-counter.surge.sh/</a>`,
+        html`<a href="https://scroll-counter.surge.sh/">scroll-counter.surge.sh</a>`,
         html`
           <h4>
             Simple App for mobile and touch devices to keep track of values or scores.
