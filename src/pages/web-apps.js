@@ -39,13 +39,14 @@ module.exports = () => {
         `
       )}
       ${projectblock(
-        'Cocktial Curator', '/assets/programs/cocktail-curator.png',
-        html`<a href="http://www.cocktail-curator.com/">cocktail-curator.com</a>`,
+        'Team-Dex', '/assets/programs/team-dex.png',
+        html`<a href="https://team-dex.surge.sh/">team-dex.surge.sh</a>`,
         html`
           <h4>
-            Tram-One app to search for drinks based on ingredients.
-            Powered by <a href="thecocktaildb.com">TheCocktailDB.com</a>.
-            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
+            App to see detailed information about Pokemon in a Team.
+            Uses <a href="https://pokeapi.co/">PokeAPI</a> for all information,
+            and <a href="http://tram-one.io">Tram-One</a> for everything else.
+            Collaborative Project with <a href="https://github.com/ethanjurman">Ethan Jurman</a>
           </h4>
         `
       )}
@@ -58,6 +59,27 @@ module.exports = () => {
             Uses <a href="http://jxnblk.com/vhs/">vhs</a> for css animations,
             <a href="https://www.npmjs.com/package/express-ws">express-ws</a> for web sockets,
             and <a href="http://tram-one.io">Tram-One</a> for everything else.
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Scroll-Counter', '/assets/programs/scroll-counter.png',
+        html`<a href="https://scroll-counter.surge.sh/">scroll-counter.surge.sh</a>`,
+        html`
+          <h4>
+            Simple App for mobile and touch devices to keep track of values or scores.
+            Uses <a href="http://tram-one.io">Tram-One</a> for everything.
+          </h4>
+        `
+      )}
+      ${projectblock(
+        'Cocktial Curator', '/assets/programs/cocktail-curator.png',
+        html`<a href="http://www.cocktail-curator.com/">cocktail-curator.com</a>`,
+        html`
+          <h4>
+            Tram-One app to search for drinks based on ingredients.
+            Powered by <a href="thecocktaildb.com">TheCocktailDB.com</a>.
+            Collaborative Project with <a href="https://github.com/chtinahow/">Tina Howard</a>
           </h4>
         `
       )}
