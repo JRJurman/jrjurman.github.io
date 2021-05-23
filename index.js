@@ -28585,15 +28585,23 @@ const textblock = require('../elements/textblock');
 
 const projectTitleStyle = `
   margin: 0px;
+  font-size: 28px;
 `
 
 const linkStyle = `
   margin: 0px;
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px
 `
 
 const titleLinkStyle = `
   color: inherit;
   text-decoration: inherit;
+`
+
+const contentStyle = `
+  font-size: 20px;
 `
 
 module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
@@ -28607,10 +28615,10 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
             href=${linkDOM.href}>
               ${title}
         </span>
-        <h5 style=${linkStyle}>${linkDOM}</h5>
-        <h4>
+        <span style=${linkStyle}>${linkDOM}</span>
+        <p style=${contentStyle}>
           ${contentDOM}
-        </h4>
+        </p>
       </h3>`,
       html`<img src='${imageSRC}'>`
     ][reverseCall]())}
@@ -28625,7 +28633,7 @@ const containerStyle = `
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1em;
-  font-size: 26px;
+  font-size: 28px;
 `
 
 module.exports = (first, second) => {
@@ -28812,7 +28820,7 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #1a5494;
+  color: #164477;
 `
 
 module.exports = (state) => {
@@ -28839,7 +28847,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #704586;
+  color: #4e1677;
 `
 
 const reverseStyle = `
@@ -28885,7 +28893,7 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #a74d11;
+  color: #774816;
 `
 
 module.exports = (state) => {
@@ -28912,7 +28920,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #9e0225;
+  color: #771616;
 `
 
 module.exports = (state) => {
