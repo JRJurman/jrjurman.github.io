@@ -28603,10 +28603,10 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
   return html`
     ${textblock.apply(this, [
       html`<h3 style=${projectTitleStyle}>
-        <a  style=${titleLinkStyle}
+        <span  style=${titleLinkStyle}
             href=${linkDOM.href}>
               ${title}
-        </a>
+        </span>
         <h5 style=${linkStyle}>${linkDOM}</h5>
         <h4>
           ${contentDOM}
@@ -28715,11 +28715,9 @@ module.exports = async (send, actionName, done) => {
 
 	// function to load and send parsed entry data to the state
 	const loadEntryAndSend = async (entryId, pageName) => {
-		console.log({entryId, pageName})
 		const entryData = await client
 			.getEntry(entryId)
 
-		console.log({entryData})
 		const entryBlockObjects = parseContentfulEntryToBlocksObjects(entryData)
 		send(actionName, {page: pageName, entry: entryBlockObjects}, done)
 	}
@@ -28746,13 +28744,11 @@ const contentfulState = {
   },
   reducers: {
     loadEntry: (state, {page, entry}) => {
-      console.log(`loading ${page} page:`, entry)
       return Object.assign({}, state, {[page]: entry})
     }
   },
   effects: {
     loadContentful: (state, data, send, done) => {
-      console.log('loading contentful')
       loadContentful(send, 'loadEntry', done)
     }
   }
@@ -28820,8 +28816,6 @@ const containerStyle = `
 `
 
 module.exports = (state) => {
-  console.log(state)
-
   return html`
     <div style=${containerStyle}>
       ${state.about && state.about.map(block => {
@@ -28854,10 +28848,14 @@ const reverseStyle = `
 
 
 module.exports = (state) => {
+  const navigateToProjectLink = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    window.open(event.target.href, '_blank')
+  }
   return html`
     <div style=${containerStyle}>
       ${state.projects && state.projects.map(block => {
-        console.log({block})
         // if this is an about block, parse and return a textblock
         if (block.type === 'about') {
           const tags = [
@@ -28872,7 +28870,7 @@ module.exports = (state) => {
         // if this is a project block, parse and return a projectblock
         return projectblock(
           block.title, block.image,
-          html`<a href=${block.link} target="_blank">${block.displayLink}</a>`,
+          html`<a href=${block.link} onclick=${navigateToProjectLink}>${block.displayLink}</a>`,
           html(['<span>', block.description, '</span>'])
         )
       })}
@@ -28891,8 +28889,6 @@ const containerStyle = `
 `
 
 module.exports = (state) => {
-  console.log(state)
-
   return html`
     <div style=${containerStyle}>
       ${state.resume && state.resume.map(block => {
@@ -28920,10 +28916,14 @@ const containerStyle = `
 `
 
 module.exports = (state) => {
+  const navigateToProjectLink = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    window.open(event.target.href, '_blank')
+  }
   return html`
     <div style=${containerStyle}>
       ${state.webapps && state.webapps.map(block => {
-        console.log({block})
         // if this is an about block, parse and return a textblock
         if (block.type === 'about') {
           const tags = [
@@ -28938,7 +28938,7 @@ module.exports = (state) => {
         // if this is a project block, parse and return a projectblock
         return projectblock(
           block.title, block.image,
-          html`<a href=${block.link} target="_blank">${block.displayLink}</a>`,
+          html`<a href=${block.link} onclick=${navigateToProjectLink}>${block.displayLink}</a>`,
           html(['<span>', block.description, '</span>'])
         )
       })}
