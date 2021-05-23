@@ -28899,7 +28899,7 @@ module.exports = (state) => {
         // if this is a project block, parse and return a projectblock
         return projectblock(
           block.title, block.image,
-          html`<a href=${block.link}>${block.displayLink}</a>`,
+          html`<a href=${block.link} target="_blank">${block.displayLink}</a>`,
           html(['<span>', block.description, '</span>'])
         )
       })}
