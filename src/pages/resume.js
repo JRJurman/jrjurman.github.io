@@ -7,16 +7,20 @@ const containerStyle = `
   color: #a74d11;
 `
 
-module.exports = () => {
+module.exports = (state) => {
+  console.log(state)
+
   return html`
     <div style=${containerStyle}>
-      ${textblock(
-        html`<img src='/assets/movies/gremlins2.png'>`,
-        html`<h3>
-          Resume is in the works, I PROMISE!
-          Come back soon!
-        </h3>`
-      )}
+      ${state.resume && state.resume.map(block => {
+        const tags = [
+          html`<img src=${block.image}>`,
+          html(['<span>', block.text, '</span>'])
+        ]
+        return block.orientation == 'right' ?
+          textblock(tags[1], tags[0]) :
+          textblock(tags[0], tags[1])
+      })}
     </div>
   `
 }

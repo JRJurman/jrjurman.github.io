@@ -5,6 +5,7 @@ const containerStyle = `
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1em;
+  font-size: 26px;
 `
 
 module.exports = (first, second) => {

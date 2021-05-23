@@ -36,7 +36,7 @@ module.exports = (pageComponent, state, prev, send) => {
           ${navbar()}
         </div>
         <div style=${pageStyle}>
-          ${page()}
+          ${page(state)}
         </div>
       </div>
     </div>

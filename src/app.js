@@ -9,8 +9,10 @@ const projects = require('./pages/projects');
 const resume = require('./pages/resume');
 
 const renderState = require('./models/renderState');
+const contentfulState = require('./models/contentfulState');
 
 app.model(renderState);
+app.model(contentfulState);
 
 app.router([
   ['/', layout.bind(this, about)],

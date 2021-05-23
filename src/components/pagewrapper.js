@@ -1,7 +1,8 @@
 const html = require('choo/html');
 
 const imagepreloader = require('../elements/imagepreloader');
-const { actions } = require('../models/renderState');
+const { actions: renderActions } = require('../models/renderState');
+const { actions: contentfulActions } = require('../models/contentfulState');
 
 module.exports = (page, state, prev, send) => {
   let vhs = (() => {
@@ -10,8 +11,14 @@ module.exports = (page, state, prev, send) => {
       if (  (!prev) ||
             (prev.location.pathname !== state.location.pathname)
       ) {
-        send(actions.pause);
-        send(actions.rerender, !prev ? 1400 : 100);
+        if (!prev) {
+          // initial load of contentful
+          send(contentfulActions.loadContentful)
+        }
+
+        // determine how fast to render the page based on this is the first load or not
+        send(renderActions.pause);
+        send(renderActions.rerender, !prev ? 1800 : 100);
         return {'display':'none'};
       }
     } else {
@@ -43,7 +50,7 @@ module.exports = (page, state, prev, send) => {
 
   return html`
     <div style=${vhsDisplay} class=${vhsClass}>
-      ${page()}
+      ${page(state)}
       ${imagepreloader()}
     </div>
   `
