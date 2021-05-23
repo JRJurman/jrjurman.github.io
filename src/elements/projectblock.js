@@ -3,15 +3,23 @@ const textblock = require('../elements/textblock');
 
 const projectTitleStyle = `
   margin: 0px;
+  font-size: 28px;
 `
 
 const linkStyle = `
   margin: 0px;
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px
 `
 
 const titleLinkStyle = `
   color: inherit;
   text-decoration: inherit;
+`
+
+const contentStyle = `
+  font-size: 20px;
 `
 
 module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
@@ -25,10 +33,10 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
             href=${linkDOM.href}>
               ${title}
         </span>
-        <h5 style=${linkStyle}>${linkDOM}</h5>
-        <h4>
+        <span style=${linkStyle}>${linkDOM}</span>
+        <p style=${contentStyle}>
           ${contentDOM}
-        </h4>
+        </p>
       </h3>`,
       html`<img src='${imageSRC}'>`
     ][reverseCall]())}

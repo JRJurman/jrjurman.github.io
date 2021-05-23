@@ -4,7 +4,7 @@ const textblock = require('../elements/textblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #a74d11;
+  color: #774816;
 `
 
 module.exports = (state) => {

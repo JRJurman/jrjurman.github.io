@@ -5,7 +5,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #704586;
+  color: #4e1677;
 `
 
 const reverseStyle = `

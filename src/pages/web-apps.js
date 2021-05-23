@@ -5,7 +5,7 @@ const projectblock = require('../elements/projectblock');
 const containerStyle = `
   max-width: 600px;
   margin: auto;
-  color: #9e0225;
+  color: #771616;
 `
 
 module.exports = (state) => {
