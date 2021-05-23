@@ -21,10 +21,10 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
   return html`
     ${textblock.apply(this, [
       html`<h3 style=${projectTitleStyle}>
-        <a  style=${titleLinkStyle}
+        <span  style=${titleLinkStyle}
             href=${linkDOM.href}>
               ${title}
-        </a>
+        </span>
         <h5 style=${linkStyle}>${linkDOM}</h5>
         <h4>
           ${contentDOM}

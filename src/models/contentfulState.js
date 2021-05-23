@@ -9,13 +9,11 @@ const contentfulState = {
   },
   reducers: {
     loadEntry: (state, {page, entry}) => {
-      console.log(`loading ${page} page:`, entry)
       return Object.assign({}, state, {[page]: entry})
     }
   },
   effects: {
     loadContentful: (state, data, send, done) => {
-      console.log('loading contentful')
       loadContentful(send, 'loadEntry', done)
     }
   }

@@ -9,10 +9,14 @@ const containerStyle = `
 `
 
 module.exports = (state) => {
+  const navigateToProjectLink = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    window.open(event.target.href, '_blank')
+  }
   return html`
     <div style=${containerStyle}>
       ${state.webapps && state.webapps.map(block => {
-        console.log({block})
         // if this is an about block, parse and return a textblock
         if (block.type === 'about') {
           const tags = [
@@ -27,7 +31,7 @@ module.exports = (state) => {
         // if this is a project block, parse and return a projectblock
         return projectblock(
           block.title, block.image,
-          html`<a href=${block.link}>${block.displayLink}</a>`,
+          html`<a href=${block.link} onclick=${navigateToProjectLink}>${block.displayLink}</a>`,
           html(['<span>', block.description, '</span>'])
         )
       })}

@@ -1,6 +1,5 @@
 const html = require('choo/html');
 
-const imagepreloader = require('../elements/imagepreloader');
 const { actions: renderActions } = require('../models/renderState');
 const { actions: contentfulActions } = require('../models/contentfulState');
 
@@ -51,7 +50,6 @@ module.exports = (page, state, prev, send) => {
   return html`
     <div style=${vhsDisplay} class=${vhsClass}>
       ${page(state)}
-      ${imagepreloader()}
     </div>
   `
 }

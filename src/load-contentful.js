@@ -52,11 +52,9 @@ module.exports = async (send, actionName, done) => {
 
 	// function to load and send parsed entry data to the state
 	const loadEntryAndSend = async (entryId, pageName) => {
-		console.log({entryId, pageName})
 		const entryData = await client
 			.getEntry(entryId)
 
-		console.log({entryData})
 		const entryBlockObjects = parseContentfulEntryToBlocksObjects(entryData)
 		send(actionName, {page: pageName, entry: entryBlockObjects}, done)
 	}

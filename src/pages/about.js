@@ -8,8 +8,6 @@ const containerStyle = `
 `
 
 module.exports = (state) => {
-  console.log(state)
-
   return html`
     <div style=${containerStyle}>
       ${state.about && state.about.map(block => {
