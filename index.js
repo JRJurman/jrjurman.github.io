@@ -28339,7 +28339,7 @@ app.router([
 
 module.exports = app;
 
-},{"./components/layout":99,"./models/contentfulState":110,"./models/renderState":111,"./pages/about":112,"./pages/projects":113,"./pages/resume":114,"./pages/web-apps":115,"choo":18,"choo/html":17}],99:[function(require,module,exports){
+},{"./components/layout":99,"./models/contentfulState":109,"./models/renderState":110,"./pages/about":111,"./pages/projects":112,"./pages/resume":113,"./pages/web-apps":114,"choo":18,"choo/html":17}],99:[function(require,module,exports){
 const html = require('choo/html');
 
 const header = require('../elements/header');
@@ -28385,10 +28385,9 @@ module.exports = (pageComponent, state, prev, send) => {
   `
 }
 
-},{"../elements/footer":101,"../elements/header":102,"../elements/navbar":104,"./pagewrapper":100,"choo/html":17}],100:[function(require,module,exports){
+},{"../elements/footer":101,"../elements/header":102,"../elements/navbar":103,"./pagewrapper":100,"choo/html":17}],100:[function(require,module,exports){
 const html = require('choo/html');
 
-const imagepreloader = require('../elements/imagepreloader');
 const { actions: renderActions } = require('../models/renderState');
 const { actions: contentfulActions } = require('../models/contentfulState');
 
@@ -28439,12 +28438,11 @@ module.exports = (page, state, prev, send) => {
   return html`
     <div style=${vhsDisplay} class=${vhsClass}>
       ${page(state)}
-      ${imagepreloader()}
     </div>
   `
 }
 
-},{"../elements/imagepreloader":103,"../models/contentfulState":110,"../models/renderState":111,"choo/html":17}],101:[function(require,module,exports){
+},{"../models/contentfulState":109,"../models/renderState":110,"choo/html":17}],101:[function(require,module,exports){
 const html = require('choo/html');
 
 const footerStyle = `
@@ -28526,31 +28524,6 @@ module.exports = () => {
 },{"choo/html":17}],103:[function(require,module,exports){
 const html = require('choo/html');
 
-const imageStyle = `
-  width: 0px; height: 0px;
-`
-
-module.exports = () => {
-  const movies = [
-    'barbarella.png', 'galaxina.png', 'gizmo2.png', 'gremlins2.png',
-    'howard.png', 'robbie.png', 'transformers.png'
-  ].map(image => html`<img style=${imageStyle} src="/assets/movies/${image}">`)
-  const programs = [
-    'asle16.png', 'cells.png', 'localinstall.png', 'password.png',
-    'pianola.png', 'point-cards.png', 'point-cards.png', 'powerls.png',
-    'spacejam.png', 'ticketprinter.png', 'vigenere.png', 'website.png', 'word.png'
-  ].map(image => html`<img style=${imageStyle} src="/assets/programs/${image}">`)
-  return html`
-    <div>
-      ${movies}
-      ${programs}
-    </div>
-  `
-}
-
-},{"choo/html":17}],104:[function(require,module,exports){
-const html = require('choo/html');
-
 const navbutton = require('./navbutton');
 
 const containerStyle = `
@@ -28587,7 +28560,7 @@ module.exports = () => {
   `
 }
 
-},{"./navbutton":105,"choo/html":17}],105:[function(require,module,exports){
+},{"./navbutton":104,"choo/html":17}],104:[function(require,module,exports){
 const html = require('choo/html');
 
 const linkStyle = `
@@ -28606,7 +28579,7 @@ module.exports = (text, link) => {
   `
 }
 
-},{"choo/html":17}],106:[function(require,module,exports){
+},{"choo/html":17}],105:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -28644,7 +28617,7 @@ module.exports = (title, imageSRC, linkDOM, contentDOM, reverse) => {
   `
 }
 
-},{"../elements/textblock":107,"choo/html":17}],107:[function(require,module,exports){
+},{"../elements/textblock":106,"choo/html":17}],106:[function(require,module,exports){
 const html = require('choo/html');
 
 const containerStyle = `
@@ -28681,13 +28654,13 @@ module.exports = (first, second) => {
   `
 }
 
-},{"choo/html":17}],108:[function(require,module,exports){
+},{"choo/html":17}],107:[function(require,module,exports){
 const app = require('./app');
 
 const tree = app.start();
 document.body.appendChild(tree);
 
-},{"./app":98}],109:[function(require,module,exports){
+},{"./app":98}],108:[function(require,module,exports){
 const contentful = require("contentful");
 const richTextHTMLRenderer = require('@contentful/rich-text-html-renderer');
 
@@ -28761,7 +28734,7 @@ module.exports = async (send, actionName, done) => {
 	loadEntryAndSend('5xgHAq15T8amsyrxwPQRYa', 'resume')
 }
 
-},{"@contentful/rich-text-html-renderer":1,"contentful":19}],110:[function(require,module,exports){
+},{"@contentful/rich-text-html-renderer":1,"contentful":19}],109:[function(require,module,exports){
 const loadContentful = require('../load-contentful');
 
 const contentfulState = {
@@ -28799,7 +28772,7 @@ module.exports = {
   actions
 }
 
-},{"../load-contentful":109}],111:[function(require,module,exports){
+},{"../load-contentful":108}],110:[function(require,module,exports){
 const renderState = {
   state: {
     paused: true,
@@ -28836,7 +28809,7 @@ module.exports = {
   actions: actions
 }
 
-},{}],112:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -28864,7 +28837,7 @@ module.exports = (state) => {
   `
 }
 
-},{"../elements/textblock":107,"choo/html":17}],113:[function(require,module,exports){
+},{"../elements/textblock":106,"choo/html":17}],112:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -28907,7 +28880,7 @@ module.exports = (state) => {
   `
 }
 
-},{"../elements/projectblock":106,"../elements/textblock":107,"choo/html":17}],114:[function(require,module,exports){
+},{"../elements/projectblock":105,"../elements/textblock":106,"choo/html":17}],113:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 
@@ -28935,7 +28908,7 @@ module.exports = (state) => {
   `
 }
 
-},{"../elements/textblock":107,"choo/html":17}],115:[function(require,module,exports){
+},{"../elements/textblock":106,"choo/html":17}],114:[function(require,module,exports){
 const html = require('choo/html');
 const textblock = require('../elements/textblock');
 const projectblock = require('../elements/projectblock');
@@ -28965,7 +28938,7 @@ module.exports = (state) => {
         // if this is a project block, parse and return a projectblock
         return projectblock(
           block.title, block.image,
-          html`<a href=${block.link}>${block.displayLink}</a>`,
+          html`<a href=${block.link} target="_blank">${block.displayLink}</a>`,
           html(['<span>', block.description, '</span>'])
         )
       })}
@@ -28973,4 +28946,4 @@ module.exports = (state) => {
   `
 }
 
-},{"../elements/projectblock":106,"../elements/textblock":107,"choo/html":17}]},{},[108]);
+},{"../elements/projectblock":105,"../elements/textblock":106,"choo/html":17}]},{},[107]);
