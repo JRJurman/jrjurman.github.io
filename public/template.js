@@ -8,6 +8,7 @@ module.exports = (noscript) => `
       <title>Jesse Jurman</title>
       <link rel="stylesheet" href="/assets/cosmo.min.css">
       <link rel="stylesheet" href="/assets/vhs.min.css">
+      <link rel="me" href="https://fosstodon.org/@jrjurman">
       <link rel="icon" type="image/png" href="/favicon.png" />
     </head>
     <body>
