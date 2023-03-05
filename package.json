@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "budo src/index.js --live --open --pushstate --dir public",
-    "prebuild": "rm -rf dist && cp -r public/ dist",
+    "prebuild": "rm -rf dist && cp -r public/ dist && node ./scripts/buildroutes",
     "build": "browserify src/index.js -o dist/index.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist -b master",
